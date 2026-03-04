@@ -3,4 +3,5 @@ __pycache__/
 .DS_Store
 .claude/
 .pytest_cache/
+.venv/
 output/
