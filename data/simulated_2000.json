@@ -1,0 +1,37 @@
+{
+  "generator": "simulate_urine_biomarkers.py",
+  "version": "1.0.0",
+  "parameters": {
+    "n_septic": 800,
+    "n_sirs": 600,
+    "n_healthy": 600,
+    "total_samples": 2000,
+    "profile": "general",
+    "noise_level": "medium",
+    "noise_multiplier": 1.0,
+    "extended_biomarkers": true,
+    "seed": 99
+  },
+  "biomarkers": {
+    "primary": [
+      "crp_cr_pg_mg",
+      "ip10_cr_pg_mg"
+    ],
+    "normalizer": "creatinine_nmol_ml",
+    "extended": [
+      "serum_amyloid_a_fold",
+      "haptoglobin_fold",
+      "resistin_fold",
+      "lrg1_fold",
+      "alpha1_acid_glycoprotein_fold"
+    ]
+  },
+  "gold_standard": "Blood culture + Sepsis-3 criteria (SOFA >= 2)",
+  "assay": "ELISA (Enzyme-Linked Immunosorbent Assay)",
+  "sample_type": "Urine",
+  "thresholds_reference": {
+    "crp_cr_septic": "> 300 pg/mg",
+    "ip10_cr_septic": "> 100 pg/mg",
+    "source": "Sepsis Software Samples (SepsisDx classifier)"
+  }
+}
