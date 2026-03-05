@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% block title %}Models{% endblock %}
+
+{% block content %}
+<h4 class="text-xl font-bold text-navy-900 mb-4"><i class="bi bi-box mr-2"></i>Trained Models</h4>
+
+{% if not models %}
+<div class="bg-blue-50 border-l-4 border-blue-500 p-4 rounded-r-lg text-sm">
+    No models exported yet. <a href="{{ url_for('train.configure') }}" class="text-blue-600 hover:text-blue-800 font-medium">Train models first</a>.
+</div>
+{% else %}
+<div class="grid md:grid-cols-2 xl:grid-cols-4 gap-4">
+    {% for m in models %}
+    <div class="bg-white rounded-xl shadow-md p-5 {% if m.name == active_model %}ring-2 ring-emerald-500{% endif %}">
+        {% if m.name == active_model %}
+        <span class="float-right px-2 py-0.5 text-xs font-medium bg-emerald-100 text-emerald-700 rounded-full">Active</span>
+        {% endif %}
+        <h6 class="font-semibold text-navy-900 mb-1">{{ m.name }}</h6>
+        <div class="text-gray-400 text-xs mb-3">{{ m.class }}</div>
+        <table class="w-full text-sm mb-3">
+            <tr class="border-b border-gray-100"><td class="py-1 text-gray-500">AUROC</td><td class="py-1 font-bold">{{ "%.4f"|format(m.auroc) if m.auroc else 'N/A' }}</td></tr>
+            <tr class="border-b border-gray-100"><td class="py-1 text-gray-500">Threshold</td><td class="py-1">{{ "%.3f"|format(m.threshold) if m.threshold else '0.500' }}</td></tr>
+            <tr><td class="py-1 text-gray-500">Exported</td><td class="py-1">{{ m.exported_at[:16] if m.exported_at else 'N/A' }}</td></tr>
+        </table>
+        <div class="flex gap-1">
+            <a href="{{ url_for('models_bp.detail', name=m.name) }}" class="px-3 py-1 border border-medical-500 text-medical-500 rounded text-xs font-medium hover:bg-medical-500 hover:text-white transition no-underline">Details</a>
+            {% if m.name != active_model %}
+            <form action="{{ url_for('models_bp.activate', name=m.name) }}" method="POST" class="inline">
+                <button type="submit" class="px-3 py-1 border border-emerald-500 text-emerald-600 rounded text-xs font-medium hover:bg-emerald-500 hover:text-white transition">Activate</button>
+            </form>
+            <form action="{{ url_for('models_bp.delete', name=m.name) }}" method="POST" class="inline"
+                  onsubmit="return confirm('Delete model {{ m.name }}?')">
+                <button type="submit" class="px-3 py-1 border border-red-400 text-red-500 rounded text-xs font-medium hover:bg-red-500 hover:text-white transition">Delete</button>
+            </form>
+            {% endif %}
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endif %}
+{% endblock %}

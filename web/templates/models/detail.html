@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+{% block title %}{{ name }}{% endblock %}
+
+{% block content %}
+<nav class="text-sm text-gray-500 mb-4">
+    <a href="{{ url_for('models_bp.list_models') }}" class="text-blue-600 hover:text-blue-800 no-underline">Models</a>
+    <span class="mx-1">/</span>
+    <span class="text-gray-700">{{ name }}</span>
+</nav>
+
+<div class="grid lg:grid-cols-2 gap-6">
+    <div class="bg-white rounded-xl shadow-md overflow-hidden">
+        <div class="px-6 py-3 border-b border-gray-100">
+            <h6 class="font-semibold text-navy-900">Model Metadata</h6>
+        </div>
+        <div class="p-6">
+            <table class="w-full text-sm">
+                <tr class="border-b border-gray-100"><td class="py-2 text-gray-500">Name</td><td class="py-2 font-bold">{{ meta.model_name }}</td></tr>
+                <tr class="border-b border-gray-100"><td class="py-2 text-gray-500">Class</td><td class="py-2">{{ meta.model_class }}</td></tr>
+                <tr class="border-b border-gray-100"><td class="py-2 text-gray-500">Optimal Threshold</td><td class="py-2">{{ "%.4f"|format(meta.optimal_threshold) }}</td></tr>
+                <tr class="border-b border-gray-100"><td class="py-2 text-gray-500">Exported</td><td class="py-2">{{ meta.exported_at }}</td></tr>
+                <tr class="border-b border-gray-100"><td class="py-2 text-gray-500">Gold Standard</td><td class="py-2">{{ meta.gold_standard }}</td></tr>
+                <tr class="border-b border-gray-100"><td class="py-2 text-gray-500">Biomarker Source</td><td class="py-2">{{ meta.biomarker_source }}</td></tr>
+                <tr><td class="py-2 text-gray-500">File Size</td><td class="py-2">{{ "%.1f"|format(file_size / 1024) }} KB</td></tr>
+            </table>
+        </div>
+    </div>
+
+    <div class="space-y-4">
+        {% if meta.model_params %}
+        <div class="bg-white rounded-xl shadow-md overflow-hidden">
+            <div class="px-6 py-3 border-b border-gray-100">
+                <h6 class="font-semibold text-navy-900">Model Parameters</h6>
+            </div>
+            <div class="p-6">
+                <table class="w-full text-sm">
+                    {% for key, val in meta.model_params.items() %}
+                    <tr class="border-b border-gray-100"><td class="py-2 text-gray-500">{{ key }}</td><td class="py-2"><code>{{ val }}</code></td></tr>
+                    {% endfor %}
+                </table>
+            </div>
+        </div>
+        {% endif %}
+
+        {% if meta.train_metrics %}
+        <div class="bg-white rounded-xl shadow-md overflow-hidden">
+            <div class="px-6 py-3 border-b border-gray-100">
+                <h6 class="font-semibold text-navy-900">Training Metrics</h6>
+            </div>
+            <div class="p-6">
+                <table class="w-full text-sm">
+                    {% for key, val in meta.train_metrics.items() %}
+                    <tr class="border-b border-gray-100">
+                        <td class="py-2 text-gray-500">{{ key }}</td>
+                        <td class="py-2 font-bold">
+                            {% if val is number %}{{ "%.4f"|format(val) }}{% else %}{{ val }}{% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </table>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<div class="mt-4">
+    <a href="{{ url_for('models_bp.list_models') }}" class="px-4 py-2 border border-medical-500 text-medical-500 rounded-lg hover:bg-medical-500 hover:text-white transition text-sm font-medium no-underline">
+        <i class="bi bi-arrow-left mr-1"></i>Back to Models
+    </a>
+</div>
+{% endblock %}
