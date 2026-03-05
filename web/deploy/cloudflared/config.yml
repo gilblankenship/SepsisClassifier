@@ -1,9 +1,51 @@
+# Cloudflare Tunnel configuration for SepsisDx
+# Installed to: /etc/cloudflared/config.yml
+#
+# NOTE: On the Jetson, all sites share a single tunnel config.
+# Add these ingress rules to the existing /etc/cloudflared/config.yml
+# alongside the other site entries (vitalmatch.ai, patent-man.com, etc.)
+#
+# After editing, restart cloudflared:
+#   sudo systemctl restart cloudflared
+
+# --- Add these entries to the ingress section ---
+#
+#   - hostname: sepsis-dx.com
+#     service: http://127.0.0.1:8443
+#     originRequest:
+#       connectTimeout: 30s
+#       noTLSVerify: true
+#       keepAliveConnections: 10
+#       keepAliveTimeout: 90s
+#
+#   - hostname: www.sepsis-dx.com
+#     service: http://127.0.0.1:8443
+#     originRequest:
+#       connectTimeout: 30s
+#       noTLSVerify: true
+#       keepAliveConnections: 10
+#       keepAliveTimeout: 90s
+
+# --- Standalone config (if using a separate tunnel) ---
 tunnel: <TUNNEL_UUID>
 credentials-file: /etc/cloudflared/<TUNNEL_UUID>.json
 
 ingress:
   - hostname: sepsis-dx.com
     service: http://127.0.0.1:8443
+    originRequest:
+      connectTimeout: 30s
+      noTLSVerify: true
+      keepAliveConnections: 10
+      keepAliveTimeout: 90s
+
   - hostname: www.sepsis-dx.com
     service: http://127.0.0.1:8443
+    originRequest:
+      connectTimeout: 30s
+      noTLSVerify: true
+      keepAliveConnections: 10
+      keepAliveTimeout: 90s
+
+  # Catch-all rule (required by cloudflared)
   - service: http_status:404

@@ -1,33 +1,28 @@
 [Unit]
-Description=SepsisDx Web Application (sepsis-dx.com)
+Description=SepsisDx Web Application (gunicorn)
 After=network.target
 
 [Service]
-Type=simple
+Type=notify
 User=sepsis-dx
 Group=sepsis-dx
+RuntimeDirectory=sepsis-dx
 WorkingDirectory=/opt/sepsis-dx/web
+Environment="PATH=/opt/sepsis-dx/.venv/bin:/usr/local/bin:/usr/bin"
+EnvironmentFile=-/etc/sepsis-dx/environment
+ExecStart=/opt/sepsis-dx/.venv/bin/gunicorn --config /opt/sepsis-dx/web/gunicorn.conf.py wsgi:app
+ExecReload=/bin/kill -s HUP $MAINPID
+Restart=on-failure
+RestartSec=10
+TimeoutStopSec=30
+KillMode=mixed
 
-EnvironmentFile=/etc/sepsis-dx/environment
-
-ExecStart=/opt/sepsis-dx/.venv/bin/gunicorn \
-    --config /opt/sepsis-dx/web/gunicorn.conf.py \
-    wsgi:app
-
-Restart=always
-RestartSec=5
-
-ProtectSystem=strict
-PrivateTmp=true
+# Security hardening
 NoNewPrivileges=true
-ReadWritePaths=/opt/sepsis-dx/models \
-               /opt/sepsis-dx/data \
-               /opt/sepsis-dx/web/uploads \
-               /var/log/sepsis-dx
-
-StandardOutput=journal
-StandardError=journal
-SyslogIdentifier=sepsis-dx
+PrivateTmp=true
+ProtectSystem=strict
+ReadWritePaths=/opt/sepsis-dx/models /opt/sepsis-dx/data /opt/sepsis-dx/web/uploads /var/log/sepsis-dx
+ProtectHome=read-only
 
 [Install]
 WantedBy=multi-user.target
