@@ -1,0 +1,454 @@
+{% extends "base.html" %}
+{% block title %}Help & Documentation{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto">
+    <h1 class="text-3xl font-bold text-navy-900 mb-2">
+        <i class="bi bi-question-circle mr-2"></i>User Manual
+    </h1>
+    <p class="text-gray-500 mb-8">Complete documentation for the SepsisDx ML classification system.</p>
+
+    <!-- Table of Contents -->
+    <div class="bg-white rounded-xl shadow-md p-6 mb-8">
+        <h2 class="text-lg font-semibold text-navy-900 mb-3">Table of Contents</h2>
+        <nav class="columns-2 gap-4 text-sm">
+            <a href="#introduction" class="block py-1 text-blue-600 hover:text-blue-800 no-underline">1. Introduction</a>
+            <a href="#quick-start" class="block py-1 text-blue-600 hover:text-blue-800 no-underline">2. Quick Start</a>
+            <a href="#biomarkers" class="block py-1 text-blue-600 hover:text-blue-800 no-underline">3. Biomarkers</a>
+            <a href="#classifiers" class="block py-1 text-blue-600 hover:text-blue-800 no-underline">4. Classifiers</a>
+            <a href="#prediction" class="block py-1 text-blue-600 hover:text-blue-800 no-underline">5. Using Predictions</a>
+            <a href="#batch" class="block py-1 text-blue-600 hover:text-blue-800 no-underline">6. Batch Prediction</a>
+            <a href="#training" class="block py-1 text-blue-600 hover:text-blue-800 no-underline">7. Training Models</a>
+            <a href="#shap" class="block py-1 text-blue-600 hover:text-blue-800 no-underline">8. SHAP Explainability</a>
+            <a href="#data-format" class="block py-1 text-blue-600 hover:text-blue-800 no-underline">9. Input Data Format</a>
+            <a href="#simulator" class="block py-1 text-blue-600 hover:text-blue-800 no-underline">10. Data Simulator</a>
+            <a href="#thresholds" class="block py-1 text-blue-600 hover:text-blue-800 no-underline">11. Threshold Optimization</a>
+            <a href="#risk-levels" class="block py-1 text-blue-600 hover:text-blue-800 no-underline">12. Risk Levels</a>
+            <a href="#api" class="block py-1 text-blue-600 hover:text-blue-800 no-underline">13. JSON API</a>
+            <a href="#glossary" class="block py-1 text-blue-600 hover:text-blue-800 no-underline">14. Glossary</a>
+        </nav>
+    </div>
+
+    <!-- Introduction -->
+    <section id="introduction" class="bg-white rounded-xl shadow-md p-6 mb-6">
+        <h2 class="text-2xl font-bold text-navy-900 mb-4 flex items-center gap-2">
+            <i class="bi bi-info-circle text-medical-500"></i> Introduction
+        </h2>
+        <p class="text-gray-700 mb-3">
+            SepsisDx is a machine learning system for detecting sepsis from <strong>urine ELISA biomarker</strong> measurements.
+            It uses two urinary biomarker ratios &mdash; CRP/Creatinine and IP-10/Creatinine &mdash; to classify patients as septic or non-septic.
+        </p>
+        <p class="text-gray-700 mb-3">
+            The system is validated against the <strong>blood-based gold standard</strong>: positive blood culture combined with Sepsis-3 criteria (SOFA score &ge; 2).
+        </p>
+        <div class="bg-blue-50 border-l-4 border-blue-500 p-4 rounded-r-lg">
+            <h3 class="font-semibold text-blue-800 mb-1">Why Urine?</h3>
+            <p class="text-blue-700 text-sm">
+                Traditional sepsis detection relies on blood draws and lab cultures, which are invasive and slow.
+                Urine-based ELISA testing offers a <strong>non-invasive, rapid alternative</strong>.
+                This software improves on the existing rule-based SepsisDx classifier by using machine learning to catch borderline cases that hard-threshold rules miss.
+            </p>
+        </div>
+    </section>
+
+    <!-- Quick Start -->
+    <section id="quick-start" class="bg-white rounded-xl shadow-md p-6 mb-6">
+        <h2 class="text-2xl font-bold text-navy-900 mb-4 flex items-center gap-2">
+            <i class="bi bi-lightning text-amber-500"></i> Quick Start
+        </h2>
+        <div class="space-y-4">
+            <div class="flex items-start gap-3">
+                <span class="flex-shrink-0 w-8 h-8 bg-medical-500 text-white rounded-full flex items-center justify-center text-sm font-bold">1</span>
+                <div>
+                    <h3 class="font-semibold">Single Prediction</h3>
+                    <p class="text-gray-600 text-sm">Go to <a href="/predict/" class="text-blue-600 hover:text-blue-800">Predict</a>, enter CRP/Creatinine and IP-10/Creatinine values, select a model, and click Classify.</p>
+                </div>
+            </div>
+            <div class="flex items-start gap-3">
+                <span class="flex-shrink-0 w-8 h-8 bg-medical-500 text-white rounded-full flex items-center justify-center text-sm font-bold">2</span>
+                <div>
+                    <h3 class="font-semibold">Batch Prediction</h3>
+                    <p class="text-gray-600 text-sm">Go to <a href="/batch/" class="text-blue-600 hover:text-blue-800">Batch</a>, upload a CSV with biomarker columns, and download classified results.</p>
+                </div>
+            </div>
+            <div class="flex items-start gap-3">
+                <span class="flex-shrink-0 w-8 h-8 bg-medical-500 text-white rounded-full flex items-center justify-center text-sm font-bold">3</span>
+                <div>
+                    <h3 class="font-semibold">Train New Models</h3>
+                    <p class="text-gray-600 text-sm">Go to <a href="/train/" class="text-blue-600 hover:text-blue-800">Train</a>, select classifiers and a dataset, then start training with cross-validation.</p>
+                </div>
+            </div>
+            <div class="flex items-start gap-3">
+                <span class="flex-shrink-0 w-8 h-8 bg-medical-500 text-white rounded-full flex items-center justify-center text-sm font-bold">4</span>
+                <div>
+                    <h3 class="font-semibold">Understand Predictions</h3>
+                    <p class="text-gray-600 text-sm">Go to <a href="/explain/" class="text-blue-600 hover:text-blue-800">Explain</a> for SHAP plots, ROC curves, decision boundaries, and calibration analysis.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Biomarkers -->
+    <section id="biomarkers" class="bg-white rounded-xl shadow-md p-6 mb-6">
+        <h2 class="text-2xl font-bold text-navy-900 mb-4 flex items-center gap-2">
+            <i class="bi bi-droplet text-red-500"></i> Biomarkers
+        </h2>
+        <div class="overflow-x-auto">
+            <table class="w-full text-sm">
+                <thead>
+                    <tr class="border-b-2 border-gray-200">
+                        <th class="text-left py-2 px-3 text-gray-500 uppercase text-xs font-semibold tracking-wider">Biomarker</th>
+                        <th class="text-left py-2 px-3 text-gray-500 uppercase text-xs font-semibold tracking-wider">Unit</th>
+                        <th class="text-left py-2 px-3 text-gray-500 uppercase text-xs font-semibold tracking-wider">SepsisDx Threshold</th>
+                        <th class="text-left py-2 px-3 text-gray-500 uppercase text-xs font-semibold tracking-wider">Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="border-b border-gray-100">
+                        <td class="py-2 px-3 font-medium">CRP / Creatinine</td>
+                        <td class="py-2 px-3">pg/mg</td>
+                        <td class="py-2 px-3"><code>&gt; 300</code> &rarr; Septic</td>
+                        <td class="py-2 px-3 text-gray-600">C-Reactive Protein normalized by urinary creatinine</td>
+                    </tr>
+                    <tr class="border-b border-gray-100">
+                        <td class="py-2 px-3 font-medium">IP-10 / Creatinine</td>
+                        <td class="py-2 px-3">pg/mg</td>
+                        <td class="py-2 px-3"><code>&gt; 100</code> &rarr; Septic</td>
+                        <td class="py-2 px-3 text-gray-600">Interferon gamma-induced Protein 10 (CXCL10) normalized by creatinine</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <p class="text-gray-500 text-sm mt-3">
+            Values are derived from urine ELISA assays. Creatinine normalization corrects for urine dilution.
+        </p>
+    </section>
+
+    <!-- Classifiers -->
+    <section id="classifiers" class="bg-white rounded-xl shadow-md p-6 mb-6">
+        <h2 class="text-2xl font-bold text-navy-900 mb-4 flex items-center gap-2">
+            <i class="bi bi-cpu text-purple-500"></i> Classifiers
+        </h2>
+        <div class="grid md:grid-cols-2 gap-4">
+            <div class="border border-gray-200 rounded-lg p-4">
+                <h3 class="font-semibold text-navy-900 mb-1">SepsisDx Baseline</h3>
+                <span class="inline-block px-2 py-0.5 text-xs font-medium bg-gray-100 text-gray-600 rounded mb-2">Rule-Based</span>
+                <p class="text-gray-600 text-sm">CRP/Cr &gt; 300 <strong>OR</strong> IP-10/Cr &gt; 100 &rarr; Septic. Hard thresholds miss borderline cases like Sample 6 (CRP/Cr=299, IP-10/Cr=80).</p>
+            </div>
+            <div class="border border-gray-200 rounded-lg p-4">
+                <h3 class="font-semibold text-navy-900 mb-1">Logistic Regression</h3>
+                <span class="inline-block px-2 py-0.5 text-xs font-medium bg-blue-100 text-blue-700 rounded mb-2">ML</span>
+                <p class="text-gray-600 text-sm">L2-regularized with internal feature scaling. Fast, well-calibrated probabilities. Good baseline ML model.</p>
+            </div>
+            <div class="border border-gray-200 rounded-lg p-4">
+                <h3 class="font-semibold text-navy-900 mb-1">Random Forest</h3>
+                <span class="inline-block px-2 py-0.5 text-xs font-medium bg-green-100 text-green-700 rounded mb-2">Ensemble</span>
+                <p class="text-gray-600 text-sm">200 decision trees (max depth 5). Handles non-linear boundaries. Typically the <strong>best overall performer</strong>.</p>
+            </div>
+            <div class="border border-gray-200 rounded-lg p-4">
+                <h3 class="font-semibold text-navy-900 mb-1">XGBoost</h3>
+                <span class="inline-block px-2 py-0.5 text-xs font-medium bg-red-100 text-red-700 rounded mb-2">Gradient Boosting</span>
+                <p class="text-gray-600 text-sm">200 estimators with automatic class imbalance handling. Uses all 7 features (basic + engineered).</p>
+            </div>
+            <div class="border border-gray-200 rounded-lg p-4 md:col-span-2">
+                <h3 class="font-semibold text-navy-900 mb-1">Neural Network</h3>
+                <span class="inline-block px-2 py-0.5 text-xs font-medium bg-purple-100 text-purple-700 rounded mb-2">Deep Learning</span>
+                <p class="text-gray-600 text-sm">MLP architecture: 32 &rarr; 16 &rarr; 8 &rarr; output. ReLU activation, Adam optimizer, early stopping, minority class oversampling. <strong>Best calibration</strong> (lowest ECE).</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Using Predictions -->
+    <section id="prediction" class="bg-white rounded-xl shadow-md p-6 mb-6">
+        <h2 class="text-2xl font-bold text-navy-900 mb-4 flex items-center gap-2">
+            <i class="bi bi-clipboard2-pulse text-medical-500"></i> Using Predictions
+        </h2>
+        <p class="text-gray-700 mb-4">Each prediction returns the following information:</p>
+        <div class="overflow-x-auto">
+            <table class="w-full text-sm">
+                <thead>
+                    <tr class="border-b-2 border-gray-200">
+                        <th class="text-left py-2 px-3 text-gray-500 uppercase text-xs font-semibold tracking-wider">Field</th>
+                        <th class="text-left py-2 px-3 text-gray-500 uppercase text-xs font-semibold tracking-wider">Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="border-b border-gray-100"><td class="py-2 px-3 font-medium">Prediction</td><td class="py-2 px-3 text-gray-600">"Septic" or "Not Septic"</td></tr>
+                    <tr class="border-b border-gray-100"><td class="py-2 px-3 font-medium">Probability</td><td class="py-2 px-3 text-gray-600">Probability of sepsis (0.0 &ndash; 1.0)</td></tr>
+                    <tr class="border-b border-gray-100"><td class="py-2 px-3 font-medium">Risk Level</td><td class="py-2 px-3 text-gray-600">LOW, MODERATE, HIGH, or VERY HIGH</td></tr>
+                    <tr class="border-b border-gray-100"><td class="py-2 px-3 font-medium">Threshold</td><td class="py-2 px-3 text-gray-600">The classification threshold applied (optimized per model)</td></tr>
+                    <tr class="border-b border-gray-100"><td class="py-2 px-3 font-medium">SepsisDx Comparison</td><td class="py-2 px-3 text-gray-600">What the rule-based system would predict</td></tr>
+                    <tr class="border-b border-gray-100"><td class="py-2 px-3 font-medium">Clinical Note</td><td class="py-2 px-3 text-gray-600">Actionable clinical guidance based on the result</td></tr>
+                    <tr class="border-b border-gray-100"><td class="py-2 px-3 font-medium">SHAP Contributions</td><td class="py-2 px-3 text-gray-600">Per-feature explanation of how each biomarker influenced the prediction</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <!-- Batch Prediction -->
+    <section id="batch" class="bg-white rounded-xl shadow-md p-6 mb-6">
+        <h2 class="text-2xl font-bold text-navy-900 mb-4 flex items-center gap-2">
+            <i class="bi bi-file-earmark-spreadsheet text-cyan-500"></i> Batch Prediction
+        </h2>
+        <p class="text-gray-700 mb-3">Upload a CSV file with biomarker columns to classify multiple patients at once.</p>
+        <div class="bg-gray-50 rounded-lg p-4 mb-4">
+            <h3 class="font-semibold text-sm text-gray-700 mb-2">Output columns added to your CSV:</h3>
+            <ul class="text-sm text-gray-600 space-y-1">
+                <li><code>ml_probability</code> &mdash; probability of sepsis</li>
+                <li><code>ml_prediction</code> &mdash; "Septic" or "Not Septic"</li>
+                <li><code>ml_risk_level</code> &mdash; LOW / MODERATE / HIGH / VERY HIGH</li>
+                <li><code>sepsisdx_prediction</code> &mdash; rule-based system comparison</li>
+                <li><code>models_agree</code> &mdash; whether ML and SepsisDx agree</li>
+            </ul>
+        </div>
+    </section>
+
+    <!-- Training -->
+    <section id="training" class="bg-white rounded-xl shadow-md p-6 mb-6">
+        <h2 class="text-2xl font-bold text-navy-900 mb-4 flex items-center gap-2">
+            <i class="bi bi-gear text-amber-500"></i> Training Models
+        </h2>
+        <p class="text-gray-700 mb-3">The training pipeline runs the following steps:</p>
+        <ol class="list-decimal list-inside space-y-2 text-gray-700 text-sm mb-4">
+            <li><strong>Data Loading</strong> &mdash; loads the selected dataset</li>
+            <li><strong>Cross-Validation</strong> &mdash; stratified 5-fold CV for all selected classifiers</li>
+            <li><strong>Threshold Optimization</strong> &mdash; finds optimal classification thresholds</li>
+            <li><strong>Model Export</strong> &mdash; trains on full dataset, exports as .pkl with JSON metadata</li>
+        </ol>
+        <div class="bg-amber-50 border-l-4 border-amber-500 p-4 rounded-r-lg">
+            <p class="text-amber-800 text-sm">
+                <strong>Note:</strong> Training runs in the background. You can monitor progress in real time via the progress page.
+                Training on 5,000 samples typically takes 30&ndash;60 seconds.
+            </p>
+        </div>
+    </section>
+
+    <!-- SHAP Explainability -->
+    <section id="shap" class="bg-white rounded-xl shadow-md p-6 mb-6">
+        <h2 class="text-2xl font-bold text-navy-900 mb-4 flex items-center gap-2">
+            <i class="bi bi-lightbulb text-yellow-500"></i> SHAP Explainability
+        </h2>
+        <p class="text-gray-700 mb-3">
+            SHAP (SHapley Additive exPlanations) values show how each biomarker contributes to individual predictions.
+            This is critical for clinical trust &mdash; clinicians need to understand <em>why</em> a model makes a prediction.
+        </p>
+        <div class="grid md:grid-cols-2 gap-4 mb-4">
+            <div class="bg-red-50 border border-red-200 rounded-lg p-4">
+                <h3 class="font-semibold text-red-800 text-sm mb-1">Positive SHAP Value</h3>
+                <p class="text-red-700 text-sm">Feature pushes prediction toward <strong>"Septic"</strong></p>
+            </div>
+            <div class="bg-green-50 border border-green-200 rounded-lg p-4">
+                <h3 class="font-semibold text-green-800 text-sm mb-1">Negative SHAP Value</h3>
+                <p class="text-green-700 text-sm">Feature pushes prediction toward <strong>"Not Septic"</strong></p>
+            </div>
+        </div>
+        <div class="bg-gray-50 rounded-lg p-4">
+            <h3 class="font-semibold text-sm text-gray-700 mb-2">Example: Borderline Sample 6 (Septic)</h3>
+            <p class="text-sm text-gray-600 mb-2">CRP/Cr = 299.0, IP-10/Cr = 80.0</p>
+            <ul class="text-sm text-gray-600 space-y-1">
+                <li>IP-10/Cr = 80.0 &rarr; <span class="text-red-600 font-semibold">+0.5922</span> (increases sepsis risk)</li>
+                <li>CRP/Cr = 299.0 &rarr; <span class="text-green-600 font-semibold">-0.0475</span> (slightly decreases risk)</li>
+            </ul>
+            <p class="text-sm text-gray-500 mt-2">The ML model learned that IP-10/Cr = 80 is clinically significant, unlike the hard threshold rule (which requires &gt; 100).</p>
+        </div>
+    </section>
+
+    <!-- Input Data Format -->
+    <section id="data-format" class="bg-white rounded-xl shadow-md p-6 mb-6">
+        <h2 class="text-2xl font-bold text-navy-900 mb-4 flex items-center gap-2">
+            <i class="bi bi-file-earmark-text text-gray-500"></i> Input Data Format
+        </h2>
+        <h3 class="font-semibold mb-2">Required Columns</h3>
+        <div class="overflow-x-auto mb-4">
+            <table class="w-full text-sm">
+                <thead>
+                    <tr class="border-b-2 border-gray-200">
+                        <th class="text-left py-2 px-3 text-gray-500 uppercase text-xs font-semibold tracking-wider">Column</th>
+                        <th class="text-left py-2 px-3 text-gray-500 uppercase text-xs font-semibold tracking-wider">Type</th>
+                        <th class="text-left py-2 px-3 text-gray-500 uppercase text-xs font-semibold tracking-wider">Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="border-b border-gray-100"><td class="py-2 px-3 font-mono text-sm">crp_cr_pg_mg</td><td class="py-2 px-3">float</td><td class="py-2 px-3 text-gray-600">CRP/Creatinine ratio in pg/mg</td></tr>
+                    <tr class="border-b border-gray-100"><td class="py-2 px-3 font-mono text-sm">ip10_cr_pg_mg</td><td class="py-2 px-3">float</td><td class="py-2 px-3 text-gray-600">IP-10/Creatinine ratio in pg/mg</td></tr>
+                </tbody>
+            </table>
+        </div>
+        <h3 class="font-semibold mb-2">Optional Columns</h3>
+        <div class="overflow-x-auto mb-4">
+            <table class="w-full text-sm">
+                <thead>
+                    <tr class="border-b-2 border-gray-200">
+                        <th class="text-left py-2 px-3 text-gray-500 uppercase text-xs font-semibold tracking-wider">Column</th>
+                        <th class="text-left py-2 px-3 text-gray-500 uppercase text-xs font-semibold tracking-wider">Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="border-b border-gray-100"><td class="py-2 px-3 font-mono text-sm">clinical_status</td><td class="py-2 px-3 text-gray-600">"Septic", "SIRS", or "Healthy" (for training data)</td></tr>
+                    <tr class="border-b border-gray-100"><td class="py-2 px-3 font-mono text-sm">sample_id</td><td class="py-2 px-3 text-gray-600">Sample identifier</td></tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="bg-gray-800 rounded-lg p-4">
+            <h3 class="text-gray-300 text-xs font-semibold uppercase tracking-wider mb-2">Example CSV</h3>
+            <pre class="text-green-400 text-sm overflow-x-auto">sample_id,clinical_status,crp_cr_pg_mg,ip10_cr_pg_mg
+1,Septic,994.2,33.5
+2,SIRS,234.2,-2.6
+3,Healthy,272.8,-5.4
+4,Septic,299.0,80.0</pre>
+        </div>
+    </section>
+
+    <!-- Data Simulator -->
+    <section id="simulator" class="bg-white rounded-xl shadow-md p-6 mb-6">
+        <h2 class="text-2xl font-bold text-navy-900 mb-4 flex items-center gap-2">
+            <i class="bi bi-shuffle text-indigo-500"></i> Data Simulator
+        </h2>
+        <p class="text-gray-700 mb-4">Generate realistic synthetic urine biomarker datasets for training and testing via the <a href="/datasets/" class="text-blue-600 hover:text-blue-800">Datasets</a> page.</p>
+        <div class="grid md:grid-cols-3 gap-4 mb-4">
+            <div class="border border-gray-200 rounded-lg p-3">
+                <h3 class="font-semibold text-sm mb-1">Population Profiles</h3>
+                <ul class="text-sm text-gray-600 space-y-1">
+                    <li><strong>General</strong> &mdash; standard hospital population</li>
+                    <li><strong>ICU</strong> &mdash; higher baseline inflammation</li>
+                    <li><strong>Pediatric</strong> &mdash; lower creatinine ranges</li>
+                </ul>
+            </div>
+            <div class="border border-gray-200 rounded-lg p-3">
+                <h3 class="font-semibold text-sm mb-1">Noise Levels</h3>
+                <ul class="text-sm text-gray-600 space-y-1">
+                    <li><strong>Low</strong> &mdash; clean data, ideal testing</li>
+                    <li><strong>Medium</strong> &mdash; realistic clinical variation</li>
+                    <li><strong>High</strong> &mdash; stress-testing robustness</li>
+                </ul>
+            </div>
+            <div class="border border-gray-200 rounded-lg p-3">
+                <h3 class="font-semibold text-sm mb-1">Extended Biomarkers</h3>
+                <ul class="text-sm text-gray-600 space-y-1">
+                    <li>Serum Amyloid A (~6.87x)</li>
+                    <li>Haptoglobin (~3.23x)</li>
+                    <li>Resistin, LRG1, AGP</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <!-- Threshold Optimization -->
+    <section id="thresholds" class="bg-white rounded-xl shadow-md p-6 mb-6">
+        <h2 class="text-2xl font-bold text-navy-900 mb-4 flex items-center gap-2">
+            <i class="bi bi-sliders text-orange-500"></i> Threshold Optimization
+        </h2>
+        <p class="text-gray-700 mb-4">The default threshold of 0.5 is not always optimal for clinical use. The system evaluates four strategies:</p>
+        <div class="overflow-x-auto">
+            <table class="w-full text-sm">
+                <thead>
+                    <tr class="border-b-2 border-gray-200">
+                        <th class="text-left py-2 px-3 text-gray-500 uppercase text-xs font-semibold tracking-wider">Strategy</th>
+                        <th class="text-left py-2 px-3 text-gray-500 uppercase text-xs font-semibold tracking-wider">Goal</th>
+                        <th class="text-left py-2 px-3 text-gray-500 uppercase text-xs font-semibold tracking-wider">Best For</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="border-b border-gray-100"><td class="py-2 px-3 font-medium">max_f1</td><td class="py-2 px-3 text-gray-600">Maximize F1 score</td><td class="py-2 px-3 text-gray-600">Balanced precision/sensitivity</td></tr>
+                    <tr class="border-b border-gray-100"><td class="py-2 px-3 font-medium">max_sensitivity_90spec</td><td class="py-2 px-3 text-gray-600">Max sensitivity, specificity &ge; 90%</td><td class="py-2 px-3 text-gray-600">Screening (ED triage)</td></tr>
+                    <tr class="border-b border-gray-100"><td class="py-2 px-3 font-medium">max_youden</td><td class="py-2 px-3 text-gray-600">Maximize Youden's J</td><td class="py-2 px-3 text-gray-600">Optimal balance (default)</td></tr>
+                    <tr class="border-b border-gray-100"><td class="py-2 px-3 font-medium">min_missed</td><td class="py-2 px-3 text-gray-600">Minimize false negatives</td><td class="py-2 px-3 text-gray-600">Critical care: never miss sepsis</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <!-- Risk Levels -->
+    <section id="risk-levels" class="bg-white rounded-xl shadow-md p-6 mb-6">
+        <h2 class="text-2xl font-bold text-navy-900 mb-4 flex items-center gap-2">
+            <i class="bi bi-shield-exclamation text-red-500"></i> Risk Levels
+        </h2>
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+            <div class="rounded-lg p-4 text-center bg-green-50 border border-green-200">
+                <div class="text-2xl font-bold text-green-700">LOW</div>
+                <div class="text-sm text-green-600">&lt; 0.2</div>
+            </div>
+            <div class="rounded-lg p-4 text-center bg-amber-50 border border-amber-200">
+                <div class="text-2xl font-bold text-amber-700">MODERATE</div>
+                <div class="text-sm text-amber-600">0.2 &ndash; 0.5</div>
+            </div>
+            <div class="rounded-lg p-4 text-center bg-orange-50 border border-orange-200">
+                <div class="text-2xl font-bold text-orange-700">HIGH</div>
+                <div class="text-sm text-orange-600">0.5 &ndash; 0.8</div>
+            </div>
+            <div class="rounded-lg p-4 text-center bg-red-50 border border-red-200">
+                <div class="text-2xl font-bold text-red-700">VERY HIGH</div>
+                <div class="text-sm text-red-600">&gt; 0.8</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- JSON API -->
+    <section id="api" class="bg-white rounded-xl shadow-md p-6 mb-6">
+        <h2 class="text-2xl font-bold text-navy-900 mb-4 flex items-center gap-2">
+            <i class="bi bi-braces text-gray-500"></i> JSON API
+        </h2>
+        <div class="space-y-3">
+            <div class="bg-gray-50 rounded-lg p-4">
+                <div class="flex items-center gap-2 mb-1">
+                    <span class="px-2 py-0.5 text-xs font-bold bg-green-100 text-green-700 rounded">GET</span>
+                    <code class="text-sm">/api/health</code>
+                </div>
+                <p class="text-gray-600 text-sm">Health check endpoint.</p>
+            </div>
+            <div class="bg-gray-50 rounded-lg p-4">
+                <div class="flex items-center gap-2 mb-1">
+                    <span class="px-2 py-0.5 text-xs font-bold bg-blue-100 text-blue-700 rounded">POST</span>
+                    <code class="text-sm">/api/predict</code>
+                </div>
+                <p class="text-gray-600 text-sm">JSON prediction. Body: <code>{"crp_cr": 450.0, "ip10_cr": 85.0}</code></p>
+            </div>
+            <div class="bg-gray-50 rounded-lg p-4">
+                <div class="flex items-center gap-2 mb-1">
+                    <span class="px-2 py-0.5 text-xs font-bold bg-green-100 text-green-700 rounded">GET</span>
+                    <code class="text-sm">/api/models</code>
+                </div>
+                <p class="text-gray-600 text-sm">List all exported models with metadata.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Glossary -->
+    <section id="glossary" class="bg-white rounded-xl shadow-md p-6 mb-6">
+        <h2 class="text-2xl font-bold text-navy-900 mb-4 flex items-center gap-2">
+            <i class="bi bi-book text-teal-500"></i> Glossary
+        </h2>
+        <div class="overflow-x-auto">
+            <table class="w-full text-sm">
+                <thead>
+                    <tr class="border-b-2 border-gray-200">
+                        <th class="text-left py-2 px-3 text-gray-500 uppercase text-xs font-semibold tracking-wider">Term</th>
+                        <th class="text-left py-2 px-3 text-gray-500 uppercase text-xs font-semibold tracking-wider">Definition</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="border-b border-gray-100"><td class="py-2 px-3 font-medium">AUROC</td><td class="py-2 px-3 text-gray-600">Area Under the ROC curve (0.5 = random, 1.0 = perfect)</td></tr>
+                    <tr class="border-b border-gray-100"><td class="py-2 px-3 font-medium">CRP</td><td class="py-2 px-3 text-gray-600">C-Reactive Protein, an acute-phase inflammatory biomarker</td></tr>
+                    <tr class="border-b border-gray-100"><td class="py-2 px-3 font-medium">ECE</td><td class="py-2 px-3 text-gray-600">Expected Calibration Error &mdash; how well predicted probabilities match actual outcomes</td></tr>
+                    <tr class="border-b border-gray-100"><td class="py-2 px-3 font-medium">ELISA</td><td class="py-2 px-3 text-gray-600">Enzyme-Linked Immunosorbent Assay for quantifying biomarkers</td></tr>
+                    <tr class="border-b border-gray-100"><td class="py-2 px-3 font-medium">IP-10</td><td class="py-2 px-3 text-gray-600">Interferon gamma-induced Protein 10 (CXCL10), elevated in sepsis</td></tr>
+                    <tr class="border-b border-gray-100"><td class="py-2 px-3 font-medium">Sensitivity</td><td class="py-2 px-3 text-gray-600">True Positive Rate &mdash; proportion of sepsis cases correctly identified</td></tr>
+                    <tr class="border-b border-gray-100"><td class="py-2 px-3 font-medium">Sepsis-3</td><td class="py-2 px-3 text-gray-600">Third International Consensus Definitions (2016): SOFA &ge; 2 with infection</td></tr>
+                    <tr class="border-b border-gray-100"><td class="py-2 px-3 font-medium">SHAP</td><td class="py-2 px-3 text-gray-600">SHapley Additive exPlanations &mdash; game-theoretic feature contribution analysis</td></tr>
+                    <tr class="border-b border-gray-100"><td class="py-2 px-3 font-medium">SIRS</td><td class="py-2 px-3 text-gray-600">Systemic Inflammatory Response Syndrome &mdash; inflammation without infection</td></tr>
+                    <tr class="border-b border-gray-100"><td class="py-2 px-3 font-medium">SOFA</td><td class="py-2 px-3 text-gray-600">Sequential Organ Failure Assessment scoring system</td></tr>
+                    <tr class="border-b border-gray-100"><td class="py-2 px-3 font-medium">Specificity</td><td class="py-2 px-3 text-gray-600">True Negative Rate &mdash; proportion of non-septic patients correctly identified</td></tr>
+                    <tr class="border-b border-gray-100"><td class="py-2 px-3 font-medium">Youden's J</td><td class="py-2 px-3 text-gray-600">Sensitivity + Specificity - 1 &mdash; optimal threshold selection metric</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <!-- Back to top -->
+    <div class="text-center pb-4">
+        <a href="#" class="text-sm text-gray-500 hover:text-gray-700 no-underline">
+            <i class="bi bi-arrow-up-circle mr-1"></i>Back to top
+        </a>
+    </div>
+</div>
+{% endblock %}

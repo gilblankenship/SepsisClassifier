@@ -49,6 +49,7 @@ def create_app(config_override=None) -> Flask:
     from blueprints.explain import explain_bp
     from blueprints.datasets import datasets_bp
     from blueprints.api import api_bp
+    from blueprints.help import help_bp
 
     app.register_blueprint(predict_bp, url_prefix="/predict")
     app.register_blueprint(batch_bp, url_prefix="/batch")
@@ -57,6 +58,7 @@ def create_app(config_override=None) -> Flask:
     app.register_blueprint(explain_bp, url_prefix="/explain")
     app.register_blueprint(datasets_bp, url_prefix="/datasets")
     app.register_blueprint(api_bp, url_prefix="/api")
+    app.register_blueprint(help_bp, url_prefix="/help")
 
     # Make get_active_model available in templates
     app.jinja_env.globals["get_active_model"] = get_active_model

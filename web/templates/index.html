@@ -2,141 +2,113 @@
 {% block title %}Dashboard{% endblock %}
 
 {% block content %}
-<div class="row g-4">
+<div class="grid lg:grid-cols-2 gap-6">
     <!-- Quick Predict Card -->
-    <div class="col-lg-6">
-        <div class="card shadow-sm border-0">
-            <div class="card-header bg-primary-navy text-white">
-                <h5 class="mb-0"><i class="bi bi-clipboard2-pulse me-2"></i>Quick Prediction</h5>
-            </div>
-            <div class="card-body">
-                <form action="/predict/run" method="POST">
-                    <div class="row g-3">
-                        <div class="col-sm-6">
-                            <label class="form-label fw-semibold">CRP / Creatinine</label>
-                            <div class="input-group">
-                                <input type="number" step="any" name="crp_cr" class="form-control form-control-lg"
-                                       placeholder="e.g. 450.0" required>
-                                <span class="input-group-text">pg/mg</span>
-                            </div>
-                        </div>
-                        <div class="col-sm-6">
-                            <label class="form-label fw-semibold">IP-10 / Creatinine</label>
-                            <div class="input-group">
-                                <input type="number" step="any" name="ip10_cr" class="form-control form-control-lg"
-                                       placeholder="e.g. 85.0" required>
-                                <span class="input-group-text">pg/mg</span>
-                            </div>
+    <div class="bg-white rounded-xl shadow-md overflow-hidden">
+        <div class="bg-navy-900 px-6 py-3">
+            <h5 class="text-white font-semibold flex items-center gap-2">
+                <i class="bi bi-clipboard2-pulse"></i>Quick Prediction
+            </h5>
+        </div>
+        <div class="p-6">
+            <form action="/predict/run" method="POST">
+                <div class="grid sm:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-1">CRP / Creatinine</label>
+                        <div class="flex">
+                            <input type="number" step="any" name="crp_cr"
+                                   class="flex-1 rounded-l-lg border border-gray-300 px-3 py-2.5 text-lg focus:outline-none focus:ring-2 focus:ring-medical-500 focus:border-medical-500"
+                                   placeholder="e.g. 450.0" required>
+                            <span class="inline-flex items-center px-3 bg-gray-100 border border-l-0 border-gray-300 rounded-r-lg text-sm text-gray-500">pg/mg</span>
                         </div>
                     </div>
-                    <input type="hidden" name="model_name" value="{{ active_model }}">
-                    <button type="submit" class="btn btn-primary btn-lg w-100 mt-3">
-                        <i class="bi bi-play-fill me-1"></i>Classify
-                    </button>
-                </form>
-            </div>
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-1">IP-10 / Creatinine</label>
+                        <div class="flex">
+                            <input type="number" step="any" name="ip10_cr"
+                                   class="flex-1 rounded-l-lg border border-gray-300 px-3 py-2.5 text-lg focus:outline-none focus:ring-2 focus:ring-medical-500 focus:border-medical-500"
+                                   placeholder="e.g. 85.0" required>
+                            <span class="inline-flex items-center px-3 bg-gray-100 border border-l-0 border-gray-300 rounded-r-lg text-sm text-gray-500">pg/mg</span>
+                        </div>
+                    </div>
+                </div>
+                <input type="hidden" name="model_name" value="{{ active_model }}">
+                <button type="submit" class="w-full mt-4 bg-medical-500 hover:bg-medical-600 text-white font-semibold py-3 px-6 rounded-lg text-lg transition flex items-center justify-center gap-2">
+                    <i class="bi bi-play-fill"></i>Classify
+                </button>
+            </form>
         </div>
     </div>
 
-    <!-- Stats Card -->
-    <div class="col-lg-6">
-        <div class="row g-3">
-            <div class="col-6">
-                <div class="card shadow-sm border-0 text-center p-3">
-                    <div class="display-6 text-primary">{{ models|length }}</div>
-                    <div class="text-muted small">Trained Models</div>
-                </div>
+    <!-- Stats -->
+    <div class="grid grid-cols-2 gap-4 content-start">
+        <div class="bg-white rounded-xl shadow-md text-center p-5">
+            <div class="text-4xl font-bold text-medical-500">{{ models|length }}</div>
+            <div class="text-gray-500 text-sm mt-1">Trained Models</div>
+        </div>
+        <div class="bg-white rounded-xl shadow-md text-center p-5">
+            <div class="text-4xl font-bold text-emerald-600">
+                {% if models %}{{ "%.3f"|format(models|map(attribute='auroc')|select('number')|max|default(0)) }}{% else %}--{% endif %}
             </div>
-            <div class="col-6">
-                <div class="card shadow-sm border-0 text-center p-3">
-                    <div class="display-6 text-success">
-                        {% if models %}{{ "%.3f"|format(models|map(attribute='auroc')|select('number')|max|default(0)) }}{% else %}--{% endif %}
-                    </div>
-                    <div class="text-muted small">Best AUROC</div>
-                </div>
+            <div class="text-gray-500 text-sm mt-1">Best AUROC</div>
+        </div>
+        <div class="col-span-2 bg-white rounded-xl shadow-md p-5">
+            <h6 class="text-gray-500 text-sm mb-2">Active Model</h6>
+            <div class="flex items-center gap-2">
+                <span class="px-2 py-1 text-xs font-medium bg-emerald-100 text-emerald-700 rounded-full">Active</span>
+                <strong class="text-navy-900">{{ active_model }}</strong>
             </div>
-            <div class="col-12">
-                <div class="card shadow-sm border-0 p-3">
-                    <h6 class="text-muted mb-2">Active Model</h6>
-                    <div class="d-flex align-items-center">
-                        <span class="badge bg-success me-2">Active</span>
-                        <strong>{{ active_model }}</strong>
-                    </div>
-                    <div class="text-muted small mt-1">
-                        Gold Standard: Blood Culture + Sepsis-3 (SOFA &ge; 2)
-                    </div>
-                </div>
-            </div>
+            <div class="text-gray-400 text-xs mt-1">Gold Standard: Blood Culture + Sepsis-3 (SOFA &ge; 2)</div>
         </div>
     </div>
 </div>
 
 <!-- Navigation Cards -->
-<div class="row g-3 mt-3">
-    <div class="col-md-4 col-lg-2">
-        <a href="/predict/" class="card shadow-sm border-0 text-decoration-none nav-card p-3 text-center">
-            <i class="bi bi-clipboard2-pulse display-5 text-primary"></i>
-            <div class="mt-2 fw-semibold">Predict</div>
-            <small class="text-muted">Single patient</small>
-        </a>
-    </div>
-    <div class="col-md-4 col-lg-2">
-        <a href="/batch/" class="card shadow-sm border-0 text-decoration-none nav-card p-3 text-center">
-            <i class="bi bi-file-earmark-spreadsheet display-5 text-info"></i>
-            <div class="mt-2 fw-semibold">Batch</div>
-            <small class="text-muted">CSV upload</small>
-        </a>
-    </div>
-    <div class="col-md-4 col-lg-2">
-        <a href="/train/" class="card shadow-sm border-0 text-decoration-none nav-card p-3 text-center">
-            <i class="bi bi-gear display-5 text-warning"></i>
-            <div class="mt-2 fw-semibold">Train</div>
-            <small class="text-muted">Build models</small>
-        </a>
-    </div>
-    <div class="col-md-4 col-lg-2">
-        <a href="/models/" class="card shadow-sm border-0 text-decoration-none nav-card p-3 text-center">
-            <i class="bi bi-box display-5 text-secondary"></i>
-            <div class="mt-2 fw-semibold">Models</div>
-            <small class="text-muted">Manage</small>
-        </a>
-    </div>
-    <div class="col-md-4 col-lg-2">
-        <a href="/explain/" class="card shadow-sm border-0 text-decoration-none nav-card p-3 text-center">
-            <i class="bi bi-diagram-3 display-5 text-purple"></i>
-            <div class="mt-2 fw-semibold">Explain</div>
-            <small class="text-muted">SHAP analysis</small>
-        </a>
-    </div>
-    <div class="col-md-4 col-lg-2">
-        <a href="/datasets/" class="card shadow-sm border-0 text-decoration-none nav-card p-3 text-center">
-            <i class="bi bi-database display-5 text-danger"></i>
-            <div class="mt-2 fw-semibold">Datasets</div>
-            <small class="text-muted">View &amp; simulate</small>
-        </a>
-    </div>
+<div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 mt-6">
+    {% set cards = [
+        ('/predict/', 'Predict', 'Single patient', 'bi-clipboard2-pulse', 'text-blue-600'),
+        ('/batch/', 'Batch', 'CSV upload', 'bi-file-earmark-spreadsheet', 'text-cyan-600'),
+        ('/train/', 'Train', 'Build models', 'bi-gear', 'text-amber-500'),
+        ('/models/', 'Models', 'Manage', 'bi-box', 'text-gray-500'),
+        ('/explain/', 'Explain', 'SHAP analysis', 'bi-lightbulb', 'text-purple-500'),
+        ('/datasets/', 'Datasets', 'View & simulate', 'bi-database', 'text-red-500'),
+    ] %}
+    {% for href, label, desc, icon, color in cards %}
+    <a href="{{ href }}" class="nav-card bg-white rounded-xl shadow-md p-5 text-center no-underline hover:shadow-lg">
+        <i class="bi {{ icon }} text-4xl {{ color }}"></i>
+        <div class="mt-2 font-semibold text-navy-900">{{ label }}</div>
+        <div class="text-gray-400 text-xs">{{ desc }}</div>
+    </a>
+    {% endfor %}
 </div>
 
 <!-- Reference Samples -->
-<div class="card shadow-sm border-0 mt-4">
-    <div class="card-header">
-        <h6 class="mb-0"><i class="bi bi-journal-medical me-2"></i>Reference Samples (Sepsis Software Samples)</h6>
+<div class="bg-white rounded-xl shadow-md overflow-hidden mt-6">
+    <div class="px-6 py-3 border-b border-gray-100">
+        <h6 class="font-semibold text-navy-900 flex items-center gap-2">
+            <i class="bi bi-journal-medical"></i>Reference Samples (Sepsis Software Samples)
+        </h6>
     </div>
-    <div class="card-body p-0">
-        <table class="table table-sm table-striped mb-0">
+    <div class="overflow-x-auto">
+        <table class="w-full text-sm">
             <thead>
-                <tr>
-                    <th>Sample</th><th>Status</th><th>CRP/Cr (pg/mg)</th><th>IP-10/Cr (pg/mg)</th>
-                    <th>Gold Standard</th><th>SepsisDx</th><th>Note</th>
+                <tr class="border-b-2 border-gray-200 bg-gray-50">
+                    <th class="text-left py-2 px-4 text-gray-500 uppercase text-xs font-semibold tracking-wider">Sample</th>
+                    <th class="text-left py-2 px-4 text-gray-500 uppercase text-xs font-semibold tracking-wider">Status</th>
+                    <th class="text-left py-2 px-4 text-gray-500 uppercase text-xs font-semibold tracking-wider">CRP/Cr</th>
+                    <th class="text-left py-2 px-4 text-gray-500 uppercase text-xs font-semibold tracking-wider">IP-10/Cr</th>
+                    <th class="text-left py-2 px-4 text-gray-500 uppercase text-xs font-semibold tracking-wider">Gold Standard</th>
+                    <th class="text-left py-2 px-4 text-gray-500 uppercase text-xs font-semibold tracking-wider">SepsisDx</th>
+                    <th class="text-left py-2 px-4 text-gray-500 uppercase text-xs font-semibold tracking-wider">Note</th>
                 </tr>
             </thead>
             <tbody>
-                <tr><td>1</td><td>Septic</td><td>994.2</td><td>33.5</td><td class="text-danger">Septic</td><td class="text-danger">Septic</td><td></td></tr>
-                <tr><td>2</td><td>SIRS</td><td>234.2</td><td>-2.6</td><td class="text-success">Not Septic</td><td class="text-success">Not Septic</td><td></td></tr>
-                <tr><td>3</td><td>Septic</td><td>1141.0</td><td>214.0</td><td class="text-danger">Septic</td><td class="text-danger">Septic</td><td></td></tr>
-                <tr><td>4</td><td>Healthy</td><td>272.8</td><td>-5.4</td><td class="text-success">Not Septic</td><td class="text-success">Not Septic</td><td></td></tr>
-                <tr><td>5</td><td>Septic</td><td>1320.3</td><td>58.06</td><td class="text-danger">Septic</td><td class="text-danger">Septic</td><td></td></tr>
-                <tr class="table-warning"><td>6</td><td>Septic</td><td>299.0</td><td>80.0</td><td class="text-danger">Septic</td><td class="text-success">Not Septic</td><td><span class="badge bg-warning text-dark">FN &mdash; Missed by SepsisDx</span></td></tr>
+                <tr class="border-b border-gray-100"><td class="py-2 px-4">1</td><td class="py-2 px-4">Septic</td><td class="py-2 px-4">994.2</td><td class="py-2 px-4">33.5</td><td class="py-2 px-4 text-red-600 font-medium">Septic</td><td class="py-2 px-4 text-red-600">Septic</td><td class="py-2 px-4"></td></tr>
+                <tr class="border-b border-gray-100"><td class="py-2 px-4">2</td><td class="py-2 px-4">SIRS</td><td class="py-2 px-4">234.2</td><td class="py-2 px-4">-2.6</td><td class="py-2 px-4 text-emerald-600 font-medium">Not Septic</td><td class="py-2 px-4 text-emerald-600">Not Septic</td><td class="py-2 px-4"></td></tr>
+                <tr class="border-b border-gray-100"><td class="py-2 px-4">3</td><td class="py-2 px-4">Septic</td><td class="py-2 px-4">1141.0</td><td class="py-2 px-4">214.0</td><td class="py-2 px-4 text-red-600 font-medium">Septic</td><td class="py-2 px-4 text-red-600">Septic</td><td class="py-2 px-4"></td></tr>
+                <tr class="border-b border-gray-100"><td class="py-2 px-4">4</td><td class="py-2 px-4">Healthy</td><td class="py-2 px-4">272.8</td><td class="py-2 px-4">-5.4</td><td class="py-2 px-4 text-emerald-600 font-medium">Not Septic</td><td class="py-2 px-4 text-emerald-600">Not Septic</td><td class="py-2 px-4"></td></tr>
+                <tr class="border-b border-gray-100"><td class="py-2 px-4">5</td><td class="py-2 px-4">Septic</td><td class="py-2 px-4">1320.3</td><td class="py-2 px-4">58.06</td><td class="py-2 px-4 text-red-600 font-medium">Septic</td><td class="py-2 px-4 text-red-600">Septic</td><td class="py-2 px-4"></td></tr>
+                <tr class="border-b border-gray-100 bg-amber-50"><td class="py-2 px-4">6</td><td class="py-2 px-4">Septic</td><td class="py-2 px-4">299.0</td><td class="py-2 px-4">80.0</td><td class="py-2 px-4 text-red-600 font-medium">Septic</td><td class="py-2 px-4 text-emerald-600">Not Septic</td><td class="py-2 px-4"><span class="px-2 py-0.5 text-xs font-medium bg-amber-200 text-amber-800 rounded-full">FN &mdash; Missed by SepsisDx</span></td></tr>
             </tbody>
         </table>
     </div>

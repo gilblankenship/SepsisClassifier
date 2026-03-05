@@ -2,23 +2,24 @@
 {% block title %}Training in Progress{% endblock %}
 
 {% block content %}
-<div class="row justify-content-center">
-    <div class="col-lg-8">
-        <div class="card shadow-sm border-0">
-            <div class="card-header bg-warning text-dark">
-                <h5 class="mb-0"><i class="bi bi-gear-wide-connected me-2"></i>Training in Progress</h5>
-            </div>
-            <div class="card-body text-center py-5">
-                <div class="spinner-border text-warning mb-3" role="status" id="spinner">
-                    <span class="visually-hidden">Training...</span>
+<div class="max-w-2xl mx-auto">
+    <div class="bg-white rounded-xl shadow-md overflow-hidden">
+        <div class="bg-amber-500 px-6 py-4">
+            <h5 class="text-white font-semibold flex items-center gap-2">
+                <i class="bi bi-gear-wide-connected"></i>Training in Progress
+            </h5>
+        </div>
+        <div class="p-8 text-center">
+            <div id="spinner" class="inline-block w-10 h-10 border-4 border-amber-200 border-t-amber-500 rounded-full animate-spin mb-4"></div>
+            <h5 id="status-message" class="text-lg font-semibold text-gray-800 mb-4">Initializing...</h5>
+            <div class="max-w-md mx-auto">
+                <div class="w-full bg-gray-200 rounded-full h-6 overflow-hidden">
+                    <div id="progress-bar"
+                         class="h-full bg-amber-500 rounded-full text-white text-xs font-medium flex items-center justify-center transition-all duration-300"
+                         style="width: 0%">0%</div>
                 </div>
-                <h5 id="status-message">Initializing...</h5>
-                <div class="progress mx-auto mt-3" style="max-width: 500px; height: 24px;">
-                    <div class="progress-bar progress-bar-striped progress-bar-animated bg-warning"
-                         id="progress-bar" style="width: 0%">0%</div>
-                </div>
-                <div class="text-muted small mt-3" id="elapsed">Elapsed: 0s</div>
             </div>
+            <div id="elapsed" class="text-gray-400 text-sm mt-3">Elapsed: 0s</div>
         </div>
     </div>
 </div>
@@ -43,11 +44,11 @@ function poll() {
             if (data.status === 'complete') {
                 window.location.href = resultsUrl;
             } else if (data.status === 'error') {
-                document.getElementById('spinner').classList.add('d-none');
+                document.getElementById('spinner').classList.add('hidden');
                 document.getElementById('status-message').innerHTML =
-                    '<span class="text-danger">Error: ' + data.error + '</span>';
-                bar.classList.remove('progress-bar-animated', 'bg-warning');
-                bar.classList.add('bg-danger');
+                    '<span class="text-red-600">Error: ' + data.error + '</span>';
+                bar.classList.remove('bg-amber-500');
+                bar.classList.add('bg-red-500');
             } else {
                 setTimeout(poll, 2000);
             }

@@ -2,33 +2,33 @@
 {% block title %}Train Models{% endblock %}
 
 {% block content %}
-<h4 class="mb-3"><i class="bi bi-gear me-2"></i>Train ML Classifiers</h4>
-<p class="text-muted">Select classifiers, configure parameters, and train on a dataset.</p>
+<h4 class="text-xl font-bold text-navy-900 mb-1"><i class="bi bi-gear mr-2"></i>Train ML Classifiers</h4>
+<p class="text-gray-500 mb-6">Select classifiers, configure parameters, and train on a dataset.</p>
 
 <form action="{{ url_for('train.start') }}" method="POST" enctype="multipart/form-data">
-    <div class="row g-4">
+    <div class="grid lg:grid-cols-7 gap-6">
         <!-- Classifier Selection -->
-        <div class="col-lg-7">
-            <div class="card shadow-sm border-0">
-                <div class="card-header"><h6 class="mb-0">Classifiers</h6></div>
-                <div class="card-body">
+        <div class="lg:col-span-4">
+            <div class="bg-white rounded-xl shadow-md overflow-hidden">
+                <div class="px-6 py-3 border-b border-gray-100">
+                    <h6 class="font-semibold text-navy-900">Classifiers</h6>
+                </div>
+                <div class="p-6 space-y-4">
                     {% for key, (name, params) in classifiers.items() %}
-                    <div class="form-check mb-3">
-                        <input class="form-check-input" type="checkbox" name="classifiers"
-                               value="{{ key }}" id="clf_{{ key }}"
-                               {% if key in ['logistic', 'random_forest'] %}checked{% endif %}>
-                        <label class="form-check-label fw-semibold" for="clf_{{ key }}">{{ name }}</label>
+                    <div>
+                        <label class="flex items-center gap-2 cursor-pointer">
+                            <input type="checkbox" name="classifiers" value="{{ key }}" id="clf_{{ key }}"
+                                   {% if key in ['logistic', 'random_forest'] %}checked{% endif %}
+                                   class="w-4 h-4 rounded border-gray-300 text-medical-500 focus:ring-medical-500">
+                            <span class="font-semibold text-gray-800">{{ name }}</span>
+                        </label>
                         {% if params %}
-                        <div class="ms-4 mt-1 small text-muted">
+                        <div class="ml-6 mt-2 space-y-1">
                             {% for pname, pval in params.items() %}
-                            <div class="row g-2 align-items-center mb-1">
-                                <div class="col-auto">
-                                    <label class="form-label mb-0">{{ pname }}:</label>
-                                </div>
-                                <div class="col-auto">
-                                    <input type="text" name="{{ key }}_{{ pname }}" value="{{ pval }}"
-                                           class="form-control form-control-sm" style="width: 120px;">
-                                </div>
+                            <div class="flex items-center gap-2">
+                                <label class="text-sm text-gray-500 w-28" for="{{ key }}_{{ pname }}">{{ pname }}:</label>
+                                <input type="text" name="{{ key }}_{{ pname }}" id="{{ key }}_{{ pname }}" value="{{ pval }}"
+                                       class="rounded border border-gray-300 px-2 py-1 text-sm w-28 focus:outline-none focus:ring-1 focus:ring-medical-500">
                             </div>
                             {% endfor %}
                         </div>
@@ -40,43 +40,47 @@
         </div>
 
         <!-- Dataset & Options -->
-        <div class="col-lg-5">
-            <div class="card shadow-sm border-0 mb-3">
-                <div class="card-header"><h6 class="mb-0">Dataset</h6></div>
-                <div class="card-body">
+        <div class="lg:col-span-3 space-y-4">
+            <div class="bg-white rounded-xl shadow-md overflow-hidden">
+                <div class="px-6 py-3 border-b border-gray-100">
+                    <h6 class="font-semibold text-navy-900">Dataset</h6>
+                </div>
+                <div class="p-6 space-y-2">
                     {% for ds in datasets %}
-                    <div class="form-check">
-                        <input class="form-check-input" type="radio" name="dataset"
-                               value="{{ ds.path }}" id="ds_{{ ds.name }}"
-                               {% if loop.last %}checked{% endif %}>
-                        <label class="form-check-label" for="ds_{{ ds.name }}">{{ ds.name }}</label>
-                    </div>
+                    <label class="flex items-center gap-2 cursor-pointer">
+                        <input type="radio" name="dataset" value="{{ ds.path }}" id="ds_{{ ds.name }}"
+                               {% if loop.last %}checked{% endif %}
+                               class="w-4 h-4 border-gray-300 text-medical-500 focus:ring-medical-500">
+                        <span class="text-sm">{{ ds.name }}</span>
+                    </label>
                     {% endfor %}
-                    <hr>
-                    <div class="form-check">
-                        <input class="form-check-input" type="radio" name="dataset"
-                               value="__upload__" id="ds_upload">
-                        <label class="form-check-label" for="ds_upload">Upload new CSV</label>
-                    </div>
-                    <input type="file" name="dataset_file" class="form-control form-control-sm mt-2" accept=".csv">
+                    <hr class="my-3 border-gray-200">
+                    <label class="flex items-center gap-2 cursor-pointer">
+                        <input type="radio" name="dataset" value="__upload__" id="ds_upload"
+                               class="w-4 h-4 border-gray-300 text-medical-500 focus:ring-medical-500">
+                        <span class="text-sm">Upload new CSV</span>
+                    </label>
+                    <input type="file" name="dataset_file" title="Upload training CSV" accept=".csv"
+                           class="w-full mt-2 rounded border border-gray-300 px-2 py-1 text-sm">
                 </div>
             </div>
 
-            <div class="card shadow-sm border-0 mb-3">
-                <div class="card-header"><h6 class="mb-0">Options</h6></div>
-                <div class="card-body">
-                    <div class="mb-2">
-                        <label class="form-label small fw-semibold">Feature Mode</label>
-                        <select name="feature_mode" class="form-select form-select-sm">
-                            <option value="basic" selected>Basic (CRP/Cr, IP-10/Cr)</option>
-                            <option value="extended">Extended (7 features)</option>
-                        </select>
-                    </div>
+            <div class="bg-white rounded-xl shadow-md overflow-hidden">
+                <div class="px-6 py-3 border-b border-gray-100">
+                    <h6 class="font-semibold text-navy-900">Options</h6>
+                </div>
+                <div class="p-6">
+                    <label class="block text-sm font-semibold text-gray-700 mb-1" for="feature_mode">Feature Mode</label>
+                    <select name="feature_mode" id="feature_mode" title="Select feature mode"
+                            class="w-full rounded border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-medical-500">
+                        <option value="basic" selected>Basic (CRP/Cr, IP-10/Cr)</option>
+                        <option value="extended">Extended (7 features)</option>
+                    </select>
                 </div>
             </div>
 
-            <button type="submit" class="btn btn-warning btn-lg w-100">
-                <i class="bi bi-lightning me-1"></i>Start Training
+            <button type="submit" class="w-full bg-amber-500 hover:bg-amber-600 text-white font-semibold py-3 rounded-lg text-lg transition flex items-center justify-center gap-2">
+                <i class="bi bi-lightning"></i>Start Training
             </button>
         </div>
     </div>

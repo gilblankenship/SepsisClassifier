@@ -2,31 +2,37 @@
 {% block title %}Training Results{% endblock %}
 
 {% block content %}
-<h4 class="mb-3"><i class="bi bi-check-circle text-success me-2"></i>Training Complete</h4>
-<p class="text-muted">
+<h4 class="text-xl font-bold text-navy-900 mb-1"><i class="bi bi-check-circle text-emerald-500 mr-2"></i>Training Complete</h4>
+<p class="text-gray-500 mb-6">
     Dataset: <strong>{{ job.dataset_name }}</strong> |
     Duration: <strong>{{ "%.1f"|format(job.finished_at - job.started_at) }}s</strong> |
     Models exported: <strong>{{ job.model_names|length }}</strong>
 </p>
 
 <!-- Cross-Validation Results -->
-<div class="card shadow-sm border-0 mb-4">
-    <div class="card-header"><h6 class="mb-0">Cross-Validation Results (5-Fold)</h6></div>
-    <div class="card-body p-0 table-responsive">
-        <table class="table table-sm table-striped mb-0">
+<div class="bg-white rounded-xl shadow-md overflow-hidden mb-6">
+    <div class="px-6 py-3 border-b border-gray-100">
+        <h6 class="font-semibold text-navy-900">Cross-Validation Results (5-Fold)</h6>
+    </div>
+    <div class="overflow-x-auto">
+        <table class="w-full text-sm">
             <thead>
-                <tr>
-                    <th>Model</th><th>AUROC</th><th>Sensitivity</th><th>Specificity</th><th>F1 Score</th>
+                <tr class="border-b-2 border-gray-200 bg-gray-50">
+                    <th class="text-left py-2 px-4 text-gray-500 uppercase text-xs font-semibold tracking-wider">Model</th>
+                    <th class="text-left py-2 px-4 text-gray-500 uppercase text-xs font-semibold tracking-wider">AUROC</th>
+                    <th class="text-left py-2 px-4 text-gray-500 uppercase text-xs font-semibold tracking-wider">Sensitivity</th>
+                    <th class="text-left py-2 px-4 text-gray-500 uppercase text-xs font-semibold tracking-wider">Specificity</th>
+                    <th class="text-left py-2 px-4 text-gray-500 uppercase text-xs font-semibold tracking-wider">F1 Score</th>
                 </tr>
             </thead>
             <tbody>
                 {% for row in job.cv_results %}
-                <tr>
-                    <td class="fw-semibold">{{ row.model }}</td>
-                    <td>{{ "%.3f"|format(row.auroc_mean) }} <span class="text-muted small">&plusmn; {{ "%.3f"|format(row.auroc_std) }}</span></td>
-                    <td>{{ "%.3f"|format(row.sensitivity_mean) }} <span class="text-muted small">&plusmn; {{ "%.3f"|format(row.sensitivity_std) }}</span></td>
-                    <td>{{ "%.3f"|format(row.specificity_mean) }} <span class="text-muted small">&plusmn; {{ "%.3f"|format(row.specificity_std) }}</span></td>
-                    <td>{{ "%.3f"|format(row.f1_score_mean) }} <span class="text-muted small">&plusmn; {{ "%.3f"|format(row.f1_score_std) }}</span></td>
+                <tr class="border-b border-gray-100">
+                    <td class="py-2 px-4 font-medium">{{ row.model }}</td>
+                    <td class="py-2 px-4">{{ "%.3f"|format(row.auroc_mean) }} <span class="text-gray-400 text-xs">&plusmn; {{ "%.3f"|format(row.auroc_std) }}</span></td>
+                    <td class="py-2 px-4">{{ "%.3f"|format(row.sensitivity_mean) }} <span class="text-gray-400 text-xs">&plusmn; {{ "%.3f"|format(row.sensitivity_std) }}</span></td>
+                    <td class="py-2 px-4">{{ "%.3f"|format(row.specificity_mean) }} <span class="text-gray-400 text-xs">&plusmn; {{ "%.3f"|format(row.specificity_std) }}</span></td>
+                    <td class="py-2 px-4">{{ "%.3f"|format(row.f1_score_mean) }} <span class="text-gray-400 text-xs">&plusmn; {{ "%.3f"|format(row.f1_score_std) }}</span></td>
                 </tr>
                 {% endfor %}
             </tbody>
@@ -35,34 +41,36 @@
 </div>
 
 <!-- AUROC Chart -->
-<div class="card shadow-sm border-0 mb-4">
-    <div class="card-header"><h6 class="mb-0">AUROC Comparison</h6></div>
-    <div class="card-body">
+<div class="bg-white rounded-xl shadow-md overflow-hidden mb-6">
+    <div class="px-6 py-3 border-b border-gray-100">
+        <h6 class="font-semibold text-navy-900">AUROC Comparison</h6>
+    </div>
+    <div class="p-6">
         <canvas id="aurocChart" height="200"></canvas>
     </div>
 </div>
 
 <!-- Exported Models -->
-<div class="card shadow-sm border-0 mb-4">
-    <div class="card-header"><h6 class="mb-0">Exported Models</h6></div>
-    <div class="card-body">
-        <div class="d-flex gap-2 flex-wrap">
-            {% for name in job.model_names %}
-            <span class="badge bg-primary fs-6">{{ name }}</span>
-            {% endfor %}
-        </div>
+<div class="bg-white rounded-xl shadow-md overflow-hidden mb-6">
+    <div class="px-6 py-3 border-b border-gray-100">
+        <h6 class="font-semibold text-navy-900">Exported Models</h6>
+    </div>
+    <div class="p-6 flex flex-wrap gap-2">
+        {% for name in job.model_names %}
+        <span class="px-3 py-1.5 bg-medical-500 text-white text-sm font-medium rounded-lg">{{ name }}</span>
+        {% endfor %}
     </div>
 </div>
 
-<div class="d-flex gap-2">
-    <a href="{{ url_for('models_bp.list_models') }}" class="btn btn-primary">
-        <i class="bi bi-box me-1"></i>View Models
+<div class="flex gap-2">
+    <a href="{{ url_for('models_bp.list_models') }}" class="px-4 py-2 bg-medical-500 hover:bg-medical-600 text-white rounded-lg transition text-sm font-medium no-underline">
+        <i class="bi bi-box mr-1"></i>View Models
     </a>
-    <a href="{{ url_for('explain.dashboard') }}" class="btn btn-outline-secondary">
-        <i class="bi bi-diagram-3 me-1"></i>SHAP Analysis
+    <a href="{{ url_for('explain.dashboard') }}" class="px-4 py-2 border border-gray-300 text-gray-600 rounded-lg hover:bg-gray-100 transition text-sm font-medium no-underline">
+        <i class="bi bi-lightbulb mr-1"></i>SHAP Analysis
     </a>
-    <a href="{{ url_for('train.configure') }}" class="btn btn-outline-warning">
-        <i class="bi bi-arrow-repeat me-1"></i>Train Again
+    <a href="{{ url_for('train.configure') }}" class="px-4 py-2 border border-amber-500 text-amber-600 rounded-lg hover:bg-amber-500 hover:text-white transition text-sm font-medium no-underline">
+        <i class="bi bi-arrow-repeat mr-1"></i>Train Again
     </a>
 </div>
 {% endblock %}
@@ -83,7 +91,7 @@ if (cvData.length > 0) {
                     ['#2563eb', '#16a34a', '#dc2626', '#f59e0b', '#8b5cf6'][i % 5]
                 ),
                 borderWidth: 0,
-                borderRadius: 4,
+                borderRadius: 6,
             }]
         },
         options: {

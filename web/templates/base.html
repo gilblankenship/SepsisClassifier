@@ -1,92 +1,161 @@
 <!DOCTYPE html>
-<html lang="en" data-bs-theme="light">
+<html lang="en" class="h-full">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}SepsisDx{% endblock %} — sepsis-dx.com</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
-    <link href="{{ url_for('static', filename='css/sepsis.css') }}" rel="stylesheet">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %}SepsisDx{% endblock %} — Digital Biosciences</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+    tailwind.config = {
+        theme: {
+            extend: {
+                colors: {
+                    navy: { 900: '#0a1628', 800: '#111d33', 700: '#1a2d4a' },
+                    medical: { 500: '#2563eb', 600: '#1d4ed8' },
+                    risk: {
+                        low: '#16a34a',
+                        moderate: '#d97706',
+                        high: '#ea580c',
+                        'very-high': '#dc2626',
+                    }
+                },
+                fontFamily: {
+                    sans: ['Inter', 'system-ui', 'sans-serif'],
+                }
+            }
+        }
+    }
+    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/sepsis.css') }}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
     {% block head %}{% endblock %}
 </head>
-<body>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-primary-navy">
-        <div class="container-fluid">
-            <a class="navbar-brand fw-bold" href="/">
-                <i class="bi bi-heart-pulse me-2"></i>SepsisDx
-            </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav me-auto">
-                    <li class="nav-item">
-                        <a class="nav-link {% if request.path == '/' %}active{% endif %}" href="/">
-                            <i class="bi bi-speedometer2 me-1"></i>Dashboard
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link {% if '/predict' in request.path %}active{% endif %}" href="/predict/">
-                            <i class="bi bi-clipboard2-pulse me-1"></i>Predict
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link {% if '/batch' in request.path %}active{% endif %}" href="/batch/">
-                            <i class="bi bi-file-earmark-spreadsheet me-1"></i>Batch
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link {% if '/train' in request.path %}active{% endif %}" href="/train/">
-                            <i class="bi bi-gear me-1"></i>Train
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link {% if '/models' in request.path %}active{% endif %}" href="/models/">
-                            <i class="bi bi-box me-1"></i>Models
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link {% if '/explain' in request.path %}active{% endif %}" href="/explain/">
-                            <i class="bi bi-diagram-3 me-1"></i>Explain
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link {% if '/datasets' in request.path %}active{% endif %}" href="/datasets/">
-                            <i class="bi bi-database me-1"></i>Datasets
-                        </a>
-                    </li>
-                </ul>
-                <span class="navbar-text text-light-muted small">
-                    <i class="bi bi-cpu me-1"></i>Active: <strong>{{ get_active_model() }}</strong>
-                </span>
+<body class="min-h-full bg-gray-50 font-sans flex flex-col">
+    <!-- Navbar -->
+    <nav class="bg-navy-900 shadow-lg sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <!-- Brand -->
+                <a href="/" class="flex items-center gap-3 group no-underline">
+                    <div class="w-9 h-9 bg-medical-500 rounded-lg flex items-center justify-center group-hover:bg-medical-600 transition">
+                        <i class="bi bi-heart-pulse text-white text-lg"></i>
+                    </div>
+                    <div class="leading-tight">
+                        <span class="text-white font-bold text-lg tracking-tight">SepsisDx</span>
+                        <span class="block text-blue-300 text-[10px] font-medium -mt-0.5">by Digital Biosciences</span>
+                    </div>
+                </a>
+
+                <!-- Desktop Nav -->
+                <div class="hidden md:flex items-center gap-1">
+                    {% set nav_items = [
+                        ('/', 'Dashboard', 'bi-speedometer2'),
+                        ('/predict/', 'Predict', 'bi-clipboard2-pulse'),
+                        ('/batch/', 'Batch', 'bi-file-earmark-spreadsheet'),
+                        ('/train/', 'Train', 'bi-gear'),
+                        ('/models/', 'Models', 'bi-box'),
+                        ('/explain/', 'Explain', 'bi-lightbulb'),
+                        ('/datasets/', 'Datasets', 'bi-database'),
+                        ('/help/', 'Help', 'bi-question-circle'),
+                    ] %}
+                    {% for href, label, icon in nav_items %}
+                    <a href="{{ href }}"
+                       class="px-3 py-2 rounded-lg text-sm font-medium transition no-underline
+                              {% if request.path == href or (href != '/' and request.path.startswith(href)) %}
+                              text-white bg-white/10
+                              {% else %}
+                              text-gray-300 hover:text-white hover:bg-white/5
+                              {% endif %}">
+                        <i class="{{ icon }} mr-1"></i>{{ label }}
+                    </a>
+                    {% endfor %}
+                </div>
+
+                <!-- Active Model Badge -->
+                <div class="hidden lg:flex items-center">
+                    <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-emerald-500/20 text-emerald-300 ring-1 ring-emerald-500/30">
+                        <span class="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-pulse"></span>
+                        {{ config.get('ACTIVE_MODEL', 'random_forest') | replace('_', ' ') | title }}
+                    </span>
+                </div>
+
+                <!-- Mobile menu button -->
+                <button type="button" title="Toggle navigation menu"
+                        onclick="document.getElementById('mobile-menu').classList.toggle('hidden')"
+                        class="md:hidden text-gray-300 hover:text-white p-2">
+                    <i class="bi bi-list text-xl"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Mobile Nav -->
+        <div id="mobile-menu" class="hidden md:hidden border-t border-white/10">
+            <div class="px-4 py-3 space-y-1">
+                {% for href, label, icon in nav_items %}
+                <a href="{{ href }}"
+                   class="block px-3 py-2 rounded-lg text-sm font-medium no-underline
+                          {% if request.path == href or (href != '/' and request.path.startswith(href)) %}
+                          text-white bg-white/10
+                          {% else %}
+                          text-gray-300 hover:text-white hover:bg-white/5
+                          {% endif %}">
+                    <i class="{{ icon }} mr-2"></i>{{ label }}
+                </a>
+                {% endfor %}
             </div>
         </div>
     </nav>
 
-    <main class="container-fluid px-4 py-3">
-        {% with messages = get_flashed_messages(with_categories=true) %}
-        {% if messages %}
+    <!-- Flash Messages -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-4 space-y-2">
         {% for category, message in messages %}
-        <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+        <div class="rounded-lg px-4 py-3 text-sm font-medium flex items-center gap-2
+                    {% if category == 'error' or category == 'danger' %}
+                    bg-red-50 text-red-800 ring-1 ring-red-200
+                    {% elif category == 'success' %}
+                    bg-emerald-50 text-emerald-800 ring-1 ring-emerald-200
+                    {% elif category == 'warning' %}
+                    bg-amber-50 text-amber-800 ring-1 ring-amber-200
+                    {% else %}
+                    bg-blue-50 text-blue-800 ring-1 ring-blue-200
+                    {% endif %}">
+            <i class="bi {% if category == 'error' or category == 'danger' %}bi-exclamation-circle{% elif category == 'success' %}bi-check-circle{% elif category == 'warning' %}bi-exclamation-triangle{% else %}bi-info-circle{% endif %}"></i>
             {{ message }}
-            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
         </div>
         {% endfor %}
-        {% endif %}
-        {% endwith %}
+    </div>
+    {% endif %}
+    {% endwith %}
 
+    <!-- Main Content -->
+    <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {% block content %}{% endblock %}
     </main>
 
-    <footer class="container-fluid px-4 py-3 mt-4 border-top text-muted small">
-        <div class="d-flex justify-content-between">
-            <span>SepsisDx ML Classifier &mdash; Urine ELISA Biomarker Analysis</span>
-            <span>Gold Standard: Blood Culture + Sepsis-3 (SOFA &ge; 2)</span>
+    <!-- Footer -->
+    <footer class="bg-navy-900 border-t border-white/10 mt-auto">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+            <div class="flex flex-col md:flex-row items-center justify-between gap-4">
+                <div class="flex items-center gap-2 text-gray-400 text-sm">
+                    <i class="bi bi-heart-pulse text-medical-500"></i>
+                    <span>&copy; 2026 <a href="https://dbmsciences.com/" target="_blank" rel="noopener" class="text-blue-400 hover:text-blue-300 transition no-underline">Digital Biosciences</a>, an <a href="https://mdcstudio.com/" target="_blank" rel="noopener" class="text-blue-400 hover:text-blue-300 transition no-underline">MDC Studio</a> portfolio company</span>
+                </div>
+                <div class="flex items-center gap-4 text-xs text-gray-500">
+                    <a href="https://dbmsciences.com/" target="_blank" rel="noopener" class="hover:text-gray-300 transition no-underline">dbmsciences.com</a>
+                    <span class="text-gray-700">|</span>
+                    <a href="https://mdcstudio.com/" target="_blank" rel="noopener" class="hover:text-gray-300 transition no-underline">mdcstudio.com</a>
+                    <span class="text-gray-700">|</span>
+                    <span>Urine ELISA Biomarker Analysis</span>
+                </div>
+            </div>
         </div>
     </footer>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
     <script src="{{ url_for('static', filename='js/charts.js') }}"></script>
     {% block scripts %}{% endblock %}
 </body>

@@ -85,6 +85,14 @@ class TestPrediction:
         assert resp.status_code == 200
 
 
+class TestHelpPage:
+    def test_help_page(self, client):
+        resp = client.get("/help/")
+        assert resp.status_code == 200
+        assert b"Quick Start" in resp.data
+        assert b"Digital Biosciences" in resp.data
+
+
 class TestErrorPages:
     def test_404(self, client):
         resp = client.get("/nonexistent-page")

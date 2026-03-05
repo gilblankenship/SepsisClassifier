@@ -2,28 +2,35 @@
 {% block title %}Datasets{% endblock %}
 
 {% block content %}
-<h4 class="mb-3"><i class="bi bi-database me-2"></i>Datasets</h4>
+<h4 class="text-xl font-bold text-navy-900 mb-4"><i class="bi bi-database mr-2"></i>Datasets</h4>
 
-<div class="row g-4">
+<div class="grid lg:grid-cols-7 gap-6">
     <!-- Dataset List -->
-    <div class="col-lg-7">
-        <div class="card shadow-sm border-0">
-            <div class="card-header"><h6 class="mb-0">Available Datasets</h6></div>
-            <div class="card-body p-0 table-responsive">
-                <table class="table table-sm table-hover mb-0">
+    <div class="lg:col-span-4">
+        <div class="bg-white rounded-xl shadow-md overflow-hidden">
+            <div class="px-6 py-3 border-b border-gray-100">
+                <h6 class="font-semibold text-navy-900">Available Datasets</h6>
+            </div>
+            <div class="overflow-x-auto">
+                <table class="w-full text-sm">
                     <thead>
-                        <tr><th>Name</th><th>Rows</th><th>Columns</th><th>Size</th><th></th></tr>
+                        <tr class="border-b-2 border-gray-200 bg-gray-50">
+                            <th class="text-left py-2 px-4 text-gray-500 uppercase text-xs font-semibold tracking-wider">Name</th>
+                            <th class="text-left py-2 px-4 text-gray-500 uppercase text-xs font-semibold tracking-wider">Rows</th>
+                            <th class="text-left py-2 px-4 text-gray-500 uppercase text-xs font-semibold tracking-wider">Columns</th>
+                            <th class="text-left py-2 px-4 text-gray-500 uppercase text-xs font-semibold tracking-wider">Size</th>
+                            <th class="py-2 px-4 text-gray-500 uppercase text-xs font-semibold tracking-wider">Action</th>
+                        </tr>
                     </thead>
                     <tbody>
                         {% for ds in datasets %}
-                        <tr>
-                            <td><a href="{{ url_for('datasets.viewer', name=ds.name) }}">{{ ds.name }}</a></td>
-                            <td>{{ ds.rows }}</td>
-                            <td>{{ ds.columns }}</td>
-                            <td>{{ ds.size_kb }} KB</td>
-                            <td>
-                                <a href="{{ url_for('datasets.download', name=ds.name) }}"
-                                   class="btn btn-sm btn-outline-primary">
+                        <tr class="border-b border-gray-100 hover:bg-gray-50">
+                            <td class="py-2 px-4"><a href="{{ url_for('datasets.viewer', name=ds.name) }}" class="text-blue-600 hover:text-blue-800 no-underline font-medium">{{ ds.name }}</a></td>
+                            <td class="py-2 px-4">{{ ds.rows }}</td>
+                            <td class="py-2 px-4">{{ ds.columns }}</td>
+                            <td class="py-2 px-4">{{ ds.size_kb }} KB</td>
+                            <td class="py-2 px-4">
+                                <a href="{{ url_for('datasets.download', name=ds.name) }}" class="text-medical-500 hover:text-medical-600 no-underline" title="Download">
                                     <i class="bi bi-download"></i>
                                 </a>
                             </td>
@@ -36,51 +43,60 @@
     </div>
 
     <!-- Simulate New -->
-    <div class="col-lg-5">
-        <div class="card shadow-sm border-0">
-            <div class="card-header"><h6 class="mb-0">Generate Synthetic Dataset</h6></div>
-            <div class="card-body">
+    <div class="lg:col-span-3">
+        <div class="bg-white rounded-xl shadow-md overflow-hidden">
+            <div class="px-6 py-3 border-b border-gray-100">
+                <h6 class="font-semibold text-navy-900">Generate Synthetic Dataset</h6>
+            </div>
+            <div class="p-6">
                 <form action="{{ url_for('datasets.simulate') }}" method="POST">
-                    <div class="row g-2 mb-2">
-                        <div class="col-4">
-                            <label class="form-label small">Septic</label>
-                            <input type="number" name="n_septic" value="200" class="form-control form-control-sm">
+                    <div class="grid grid-cols-3 gap-2 mb-3">
+                        <div>
+                            <label class="block text-xs font-medium text-gray-600 mb-1" for="n_septic">Septic</label>
+                            <input type="number" name="n_septic" id="n_septic" value="200"
+                                   class="w-full rounded border border-gray-300 px-2 py-1.5 text-sm focus:outline-none focus:ring-1 focus:ring-medical-500">
                         </div>
-                        <div class="col-4">
-                            <label class="form-label small">SIRS</label>
-                            <input type="number" name="n_sirs" value="150" class="form-control form-control-sm">
+                        <div>
+                            <label class="block text-xs font-medium text-gray-600 mb-1" for="n_sirs">SIRS</label>
+                            <input type="number" name="n_sirs" id="n_sirs" value="150"
+                                   class="w-full rounded border border-gray-300 px-2 py-1.5 text-sm focus:outline-none focus:ring-1 focus:ring-medical-500">
                         </div>
-                        <div class="col-4">
-                            <label class="form-label small">Healthy</label>
-                            <input type="number" name="n_healthy" value="150" class="form-control form-control-sm">
+                        <div>
+                            <label class="block text-xs font-medium text-gray-600 mb-1" for="n_healthy">Healthy</label>
+                            <input type="number" name="n_healthy" id="n_healthy" value="150"
+                                   class="w-full rounded border border-gray-300 px-2 py-1.5 text-sm focus:outline-none focus:ring-1 focus:ring-medical-500">
                         </div>
                     </div>
-                    <div class="mb-2">
-                        <label class="form-label small">Profile</label>
-                        <select name="profile" class="form-select form-select-sm">
+                    <div class="mb-3">
+                        <label class="block text-xs font-medium text-gray-600 mb-1" for="profile">Profile</label>
+                        <select name="profile" id="profile" title="Population profile"
+                                class="w-full rounded border border-gray-300 px-2 py-1.5 text-sm focus:outline-none focus:ring-1 focus:ring-medical-500">
                             <option value="general" selected>General</option>
                             <option value="icu">ICU</option>
                             <option value="pediatric">Pediatric</option>
                         </select>
                     </div>
-                    <div class="mb-2">
-                        <label class="form-label small">Noise Level</label>
-                        <select name="noise" class="form-select form-select-sm">
+                    <div class="mb-3">
+                        <label class="block text-xs font-medium text-gray-600 mb-1" for="noise">Noise Level</label>
+                        <select name="noise" id="noise" title="Noise level"
+                                class="w-full rounded border border-gray-300 px-2 py-1.5 text-sm focus:outline-none focus:ring-1 focus:ring-medical-500">
                             <option value="low">Low</option>
                             <option value="medium" selected>Medium</option>
                             <option value="high">High</option>
                         </select>
                     </div>
-                    <div class="mb-2">
-                        <label class="form-label small">Seed</label>
-                        <input type="number" name="seed" value="42" class="form-control form-control-sm">
+                    <div class="mb-3">
+                        <label class="block text-xs font-medium text-gray-600 mb-1" for="seed">Seed</label>
+                        <input type="number" name="seed" id="seed" value="42"
+                               class="w-full rounded border border-gray-300 px-2 py-1.5 text-sm focus:outline-none focus:ring-1 focus:ring-medical-500">
                     </div>
-                    <div class="form-check mb-3">
-                        <input type="checkbox" name="extended" class="form-check-input" id="ext_check">
-                        <label class="form-check-label small" for="ext_check">Include extended proteomics biomarkers</label>
-                    </div>
-                    <button type="submit" class="btn btn-primary w-100">
-                        <i class="bi bi-plus-circle me-1"></i>Generate Dataset
+                    <label class="flex items-center gap-2 cursor-pointer mb-4">
+                        <input type="checkbox" name="extended" id="ext_check"
+                               class="w-4 h-4 rounded border-gray-300 text-medical-500 focus:ring-medical-500">
+                        <span class="text-sm text-gray-700">Include extended proteomics biomarkers</span>
+                    </label>
+                    <button type="submit" class="w-full bg-medical-500 hover:bg-medical-600 text-white font-semibold py-2.5 rounded-lg transition flex items-center justify-center gap-2">
+                        <i class="bi bi-plus-circle"></i>Generate Dataset
                     </button>
                 </form>
             </div>

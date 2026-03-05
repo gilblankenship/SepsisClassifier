@@ -2,88 +2,93 @@
 {% block title %}Explainability{% endblock %}
 
 {% block content %}
-<h4 class="mb-3"><i class="bi bi-diagram-3 me-2"></i>Model Explainability Dashboard</h4>
-<p class="text-muted">SHAP-based explanations showing how each biomarker contributes to predictions.</p>
+<h4 class="text-xl font-bold text-navy-900 mb-1"><i class="bi bi-lightbulb mr-2"></i>Model Explainability Dashboard</h4>
+<p class="text-gray-500 mb-6">SHAP-based explanations showing how each biomarker contributes to predictions.</p>
 
-<div class="mb-3">
-    <label class="form-label fw-semibold">Model:</label>
-    <select id="model-select" class="form-select d-inline-block" style="width: auto;">
+<div class="mb-4">
+    <label class="text-sm font-semibold text-gray-700 mr-2" for="model-select">Model:</label>
+    <select id="model-select" title="Select model for explainability plots"
+            class="rounded-lg border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-medical-500">
         {% for m in models %}
         <option value="{{ m.name }}" {% if m.name == active_model %}selected{% endif %}>{{ m.name }}</option>
         {% endfor %}
     </select>
 </div>
 
-<!-- Plot Tabs -->
-<ul class="nav nav-tabs mb-3" role="tablist">
-    <li class="nav-item">
-        <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#tab-shap-summary">SHAP Summary</button>
-    </li>
-    <li class="nav-item">
-        <button class="nav-link" data-bs-toggle="tab" data-bs-target="#tab-shap-bar">Feature Importance</button>
-    </li>
-    <li class="nav-item">
-        <button class="nav-link" data-bs-toggle="tab" data-bs-target="#tab-boundary">Decision Boundary</button>
-    </li>
-    <li class="nav-item">
-        <button class="nav-link" data-bs-toggle="tab" data-bs-target="#tab-roc">ROC Curves</button>
-    </li>
-    <li class="nav-item">
-        <button class="nav-link" data-bs-toggle="tab" data-bs-target="#tab-calibration">Calibration</button>
-    </li>
-</ul>
+<!-- Tabs -->
+<div class="border-b border-gray-200 mb-4">
+    <nav class="flex gap-4">
+        {% set tabs = [
+            ('shap-summary', 'SHAP Summary'),
+            ('shap-bar', 'Feature Importance'),
+            ('boundary', 'Decision Boundary'),
+            ('roc', 'ROC Curves'),
+            ('calibration', 'Calibration'),
+        ] %}
+        {% for id, label in tabs %}
+        <button type="button" onclick="switchTab('{{ id }}')"
+                class="tab-btn py-2 px-1 text-sm font-medium border-b-2 transition
+                       {% if loop.first %}border-medical-500 text-medical-500 active{% else %}border-transparent text-gray-500 hover:text-gray-700{% endif %}"
+                data-tab="{{ id }}">
+            {{ label }}
+        </button>
+        {% endfor %}
+    </nav>
+</div>
 
-<div class="tab-content">
-    <div class="tab-pane fade show active" id="tab-shap-summary">
-        <div class="card shadow-sm border-0">
-            <div class="card-body text-center">
-                <img id="img-shap-summary" class="img-fluid" loading="lazy"
-                     src="{{ url_for('explain.shap_summary_png', model=active_model) }}"
-                     alt="SHAP Summary Plot">
-            </div>
-        </div>
+<!-- Tab Panels -->
+<div id="panel-shap-summary" class="tab-panel active">
+    <div class="bg-white rounded-xl shadow-md p-6 text-center">
+        <img id="img-shap-summary" class="plot-img mx-auto" loading="lazy"
+             src="{{ url_for('explain.shap_summary_png', model=active_model) }}"
+             alt="SHAP Summary Plot">
     </div>
-    <div class="tab-pane fade" id="tab-shap-bar">
-        <div class="card shadow-sm border-0">
-            <div class="card-body text-center">
-                <img id="img-shap-bar" class="img-fluid" loading="lazy"
-                     src="{{ url_for('explain.shap_bar_png', model=active_model) }}"
-                     alt="SHAP Bar Plot">
-            </div>
-        </div>
+</div>
+<div id="panel-shap-bar" class="tab-panel">
+    <div class="bg-white rounded-xl shadow-md p-6 text-center">
+        <img id="img-shap-bar" class="plot-img mx-auto" loading="lazy"
+             src="{{ url_for('explain.shap_bar_png', model=active_model) }}"
+             alt="SHAP Bar Plot">
     </div>
-    <div class="tab-pane fade" id="tab-boundary">
-        <div class="card shadow-sm border-0">
-            <div class="card-body text-center">
-                <img id="img-boundary" class="img-fluid" loading="lazy"
-                     src="{{ url_for('explain.decision_boundary_png', model=active_model) }}"
-                     alt="Decision Boundary">
-            </div>
-        </div>
+</div>
+<div id="panel-boundary" class="tab-panel">
+    <div class="bg-white rounded-xl shadow-md p-6 text-center">
+        <img id="img-boundary" class="plot-img mx-auto" loading="lazy"
+             src="{{ url_for('explain.decision_boundary_png', model=active_model) }}"
+             alt="Decision Boundary">
     </div>
-    <div class="tab-pane fade" id="tab-roc">
-        <div class="card shadow-sm border-0">
-            <div class="card-body text-center">
-                <img class="img-fluid" loading="lazy"
-                     src="{{ url_for('explain.roc_curves_png') }}"
-                     alt="ROC Curves">
-            </div>
-        </div>
+</div>
+<div id="panel-roc" class="tab-panel">
+    <div class="bg-white rounded-xl shadow-md p-6 text-center">
+        <img class="plot-img mx-auto" loading="lazy"
+             src="{{ url_for('explain.roc_curves_png') }}"
+             alt="ROC Curves">
     </div>
-    <div class="tab-pane fade" id="tab-calibration">
-        <div class="card shadow-sm border-0">
-            <div class="card-body text-center">
-                <img class="img-fluid" loading="lazy"
-                     src="{{ url_for('explain.calibration_png') }}"
-                     alt="Calibration Curves">
-            </div>
-        </div>
+</div>
+<div id="panel-calibration" class="tab-panel">
+    <div class="bg-white rounded-xl shadow-md p-6 text-center">
+        <img class="plot-img mx-auto" loading="lazy"
+             src="{{ url_for('explain.calibration_png') }}"
+             alt="Calibration Curves">
     </div>
 </div>
 {% endblock %}
 
 {% block scripts %}
 <script>
+function switchTab(tabId) {
+    document.querySelectorAll('.tab-btn').forEach(b => {
+        b.classList.remove('active', 'border-medical-500', 'text-medical-500');
+        b.classList.add('border-transparent', 'text-gray-500');
+    });
+    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+
+    const btn = document.querySelector(`[data-tab="${tabId}"]`);
+    btn.classList.add('active', 'border-medical-500', 'text-medical-500');
+    btn.classList.remove('border-transparent', 'text-gray-500');
+    document.getElementById('panel-' + tabId).classList.add('active');
+}
+
 document.getElementById('model-select').addEventListener('change', function() {
     const model = this.value;
     document.getElementById('img-shap-summary').src = '/explain/shap-summary.png?model=' + model;

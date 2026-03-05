@@ -2,62 +2,60 @@
 {% block title %}Predict{% endblock %}
 
 {% block content %}
-<h4 class="mb-3"><i class="bi bi-clipboard2-pulse me-2"></i>Single Patient Prediction</h4>
-<p class="text-muted">Enter urine ELISA biomarker measurements to classify sepsis status.</p>
+<h4 class="text-xl font-bold text-navy-900 mb-1"><i class="bi bi-clipboard2-pulse mr-2"></i>Single Patient Prediction</h4>
+<p class="text-gray-500 mb-6">Enter urine ELISA biomarker measurements to classify sepsis status.</p>
 
-<div class="row">
-    <div class="col-lg-6">
-        <div class="card shadow-sm border-0">
-            <div class="card-body">
-                <form action="{{ url_for('predict.run_prediction') }}" method="POST">
-                    <div class="mb-3">
-                        <label class="form-label fw-semibold">CRP / Creatinine (pg/mg)</label>
-                        <input type="number" step="any" name="crp_cr" class="form-control form-control-lg"
-                               placeholder="e.g. 450.0" required>
-                        <div class="form-text">SepsisDx threshold: &gt; 300 pg/mg</div>
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label fw-semibold">IP-10 / Creatinine (pg/mg)</label>
-                        <input type="number" step="any" name="ip10_cr" class="form-control form-control-lg"
-                               placeholder="e.g. 85.0" required>
-                        <div class="form-text">SepsisDx threshold: &gt; 100 pg/mg</div>
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label fw-semibold">Model</label>
-                        <select name="model_name" class="form-select">
-                            {% for m in models %}
-                            <option value="{{ m.name }}" {% if m.name == get_active_model() %}selected{% endif %}>
-                                {{ m.name }} (AUROC={{ "%.3f"|format(m.auroc) if m.auroc else 'N/A' }})
-                            </option>
-                            {% endfor %}
-                        </select>
-                    </div>
-                    <button type="submit" class="btn btn-primary btn-lg w-100">
-                        <i class="bi bi-play-fill me-1"></i>Run Classification
-                    </button>
-                </form>
+<div class="grid lg:grid-cols-2 gap-6">
+    <div class="bg-white rounded-xl shadow-md p-6">
+        <form action="{{ url_for('predict.run_prediction') }}" method="POST">
+            <div class="mb-4">
+                <label class="block text-sm font-semibold text-gray-700 mb-1">CRP / Creatinine (pg/mg)</label>
+                <input type="number" step="any" name="crp_cr"
+                       class="w-full rounded-lg border border-gray-300 px-4 py-3 text-lg focus:outline-none focus:ring-2 focus:ring-medical-500 focus:border-medical-500"
+                       placeholder="e.g. 450.0" required>
+                <p class="text-gray-400 text-xs mt-1">SepsisDx threshold: &gt; 300 pg/mg</p>
             </div>
-        </div>
+            <div class="mb-4">
+                <label class="block text-sm font-semibold text-gray-700 mb-1">IP-10 / Creatinine (pg/mg)</label>
+                <input type="number" step="any" name="ip10_cr"
+                       class="w-full rounded-lg border border-gray-300 px-4 py-3 text-lg focus:outline-none focus:ring-2 focus:ring-medical-500 focus:border-medical-500"
+                       placeholder="e.g. 85.0" required>
+                <p class="text-gray-400 text-xs mt-1">SepsisDx threshold: &gt; 100 pg/mg</p>
+            </div>
+            <div class="mb-4">
+                <label class="block text-sm font-semibold text-gray-700 mb-1">Model</label>
+                <select name="model_name" title="Select classification model" class="w-full rounded-lg border border-gray-300 px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-medical-500">
+                    {% for m in models %}
+                    <option value="{{ m.name }}" {% if m.name == get_active_model() %}selected{% endif %}>
+                        {{ m.name }} (AUROC={{ "%.3f"|format(m.auroc) if m.auroc else 'N/A' }})
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+            <button type="submit" class="w-full bg-medical-500 hover:bg-medical-600 text-white font-semibold py-3 rounded-lg text-lg transition flex items-center justify-center gap-2">
+                <i class="bi bi-play-fill"></i>Run Classification
+            </button>
+        </form>
     </div>
-    <div class="col-lg-6">
-        <div class="card shadow-sm border-0">
-            <div class="card-header"><h6 class="mb-0">Biomarker Reference</h6></div>
-            <div class="card-body">
-                <table class="table table-sm mb-0">
-                    <thead><tr><th>Biomarker</th><th>Unit</th><th>SepsisDx Threshold</th></tr></thead>
-                    <tbody>
-                        <tr><td>CRP / Creatinine</td><td>pg/mg</td><td>&gt; 300 &rarr; Septic</td></tr>
-                        <tr><td>IP-10 / Creatinine</td><td>pg/mg</td><td>&gt; 100 &rarr; Septic</td></tr>
-                    </tbody>
-                </table>
-                <hr>
-                <h6>Risk Levels</h6>
-                <div class="d-flex gap-2 flex-wrap">
-                    <span class="badge risk-low">LOW (&lt;0.2)</span>
-                    <span class="badge risk-moderate">MODERATE (0.2-0.5)</span>
-                    <span class="badge risk-high">HIGH (0.5-0.8)</span>
-                    <span class="badge risk-very-high">VERY HIGH (&gt;0.8)</span>
-                </div>
+    <div class="bg-white rounded-xl shadow-md overflow-hidden">
+        <div class="px-6 py-3 border-b border-gray-100">
+            <h6 class="font-semibold text-navy-900">Biomarker Reference</h6>
+        </div>
+        <div class="p-6">
+            <table class="w-full text-sm mb-4">
+                <thead><tr class="border-b-2 border-gray-200"><th class="text-left py-2 text-gray-500 uppercase text-xs font-semibold">Biomarker</th><th class="text-left py-2 text-gray-500 uppercase text-xs font-semibold">Unit</th><th class="text-left py-2 text-gray-500 uppercase text-xs font-semibold">Threshold</th></tr></thead>
+                <tbody>
+                    <tr class="border-b border-gray-100"><td class="py-2">CRP / Creatinine</td><td class="py-2">pg/mg</td><td class="py-2">&gt; 300 &rarr; Septic</td></tr>
+                    <tr class="border-b border-gray-100"><td class="py-2">IP-10 / Creatinine</td><td class="py-2">pg/mg</td><td class="py-2">&gt; 100 &rarr; Septic</td></tr>
+                </tbody>
+            </table>
+            <hr class="my-4 border-gray-200">
+            <h6 class="font-semibold text-sm mb-2">Risk Levels</h6>
+            <div class="flex flex-wrap gap-2">
+                <span class="px-3 py-1 text-xs font-medium text-white rounded-full risk-low">LOW (&lt;0.2)</span>
+                <span class="px-3 py-1 text-xs font-medium text-white rounded-full risk-moderate">MODERATE (0.2-0.5)</span>
+                <span class="px-3 py-1 text-xs font-medium text-white rounded-full risk-high">HIGH (0.5-0.8)</span>
+                <span class="px-3 py-1 text-xs font-medium text-white rounded-full risk-very-high">VERY HIGH (&gt;0.8)</span>
             </div>
         </div>
     </div>
