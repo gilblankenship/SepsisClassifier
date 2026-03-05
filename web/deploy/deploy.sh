@@ -81,7 +81,10 @@ log_info "Step 3: Setting up application directory..."
 mkdir -p "$APP_DIR"
 mkdir -p "$APP_DIR/models"
 mkdir -p "$APP_DIR/data"
+mkdir -p "$APP_DIR/output"
 mkdir -p "$APP_DIR/web/uploads"
+mkdir -p "$APP_DIR/.cache/matplotlib"
+mkdir -p "$APP_DIR/.config/matplotlib"
 mkdir -p "$LOG_DIR"
 mkdir -p "$CONF_DIR"
 
@@ -92,7 +95,11 @@ rsync -a --delete \
     --exclude='__pycache__' \
     --exclude='.env' \
     --exclude='*.pyc' \
-    --exclude='web/uploads/*' \
+    --exclude='web/uploads' \
+    --exclude='models' \
+    --exclude='output' \
+    --exclude='.cache' \
+    --exclude='.config' \
     --exclude='References/' \
     "$REPO_DIR/" "$APP_DIR/"
 
@@ -127,6 +134,7 @@ SECRET_KEY=${SECRET_KEY}
 ACTIVE_MODEL=random_forest
 GUNICORN_WORKERS=2
 GUNICORN_THREADS=4
+MPLCONFIGDIR=/opt/sepsis-dx/.cache/matplotlib
 EOF
     chmod 600 "$CONF_DIR/environment"
     chown root:"$APP_USER" "$CONF_DIR/environment"
