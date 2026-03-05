@@ -1,0 +1,97 @@
+{% extends "base.html" %}
+{% block title %}Training Results{% endblock %}
+
+{% block content %}
+<h4 class="mb-3"><i class="bi bi-check-circle text-success me-2"></i>Training Complete</h4>
+<p class="text-muted">
+    Dataset: <strong>{{ job.dataset_name }}</strong> |
+    Duration: <strong>{{ "%.1f"|format(job.finished_at - job.started_at) }}s</strong> |
+    Models exported: <strong>{{ job.model_names|length }}</strong>
+</p>
+
+<!-- Cross-Validation Results -->
+<div class="card shadow-sm border-0 mb-4">
+    <div class="card-header"><h6 class="mb-0">Cross-Validation Results (5-Fold)</h6></div>
+    <div class="card-body p-0 table-responsive">
+        <table class="table table-sm table-striped mb-0">
+            <thead>
+                <tr>
+                    <th>Model</th><th>AUROC</th><th>Sensitivity</th><th>Specificity</th><th>F1 Score</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for row in job.cv_results %}
+                <tr>
+                    <td class="fw-semibold">{{ row.model }}</td>
+                    <td>{{ "%.3f"|format(row.auroc_mean) }} <span class="text-muted small">&plusmn; {{ "%.3f"|format(row.auroc_std) }}</span></td>
+                    <td>{{ "%.3f"|format(row.sensitivity_mean) }} <span class="text-muted small">&plusmn; {{ "%.3f"|format(row.sensitivity_std) }}</span></td>
+                    <td>{{ "%.3f"|format(row.specificity_mean) }} <span class="text-muted small">&plusmn; {{ "%.3f"|format(row.specificity_std) }}</span></td>
+                    <td>{{ "%.3f"|format(row.f1_score_mean) }} <span class="text-muted small">&plusmn; {{ "%.3f"|format(row.f1_score_std) }}</span></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- AUROC Chart -->
+<div class="card shadow-sm border-0 mb-4">
+    <div class="card-header"><h6 class="mb-0">AUROC Comparison</h6></div>
+    <div class="card-body">
+        <canvas id="aurocChart" height="200"></canvas>
+    </div>
+</div>
+
+<!-- Exported Models -->
+<div class="card shadow-sm border-0 mb-4">
+    <div class="card-header"><h6 class="mb-0">Exported Models</h6></div>
+    <div class="card-body">
+        <div class="d-flex gap-2 flex-wrap">
+            {% for name in job.model_names %}
+            <span class="badge bg-primary fs-6">{{ name }}</span>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+<div class="d-flex gap-2">
+    <a href="{{ url_for('models_bp.list_models') }}" class="btn btn-primary">
+        <i class="bi bi-box me-1"></i>View Models
+    </a>
+    <a href="{{ url_for('explain.dashboard') }}" class="btn btn-outline-secondary">
+        <i class="bi bi-diagram-3 me-1"></i>SHAP Analysis
+    </a>
+    <a href="{{ url_for('train.configure') }}" class="btn btn-outline-warning">
+        <i class="bi bi-arrow-repeat me-1"></i>Train Again
+    </a>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+const cvData = {{ job.cv_results|tojson }};
+if (cvData.length > 0) {
+    const ctx = document.getElementById('aurocChart').getContext('2d');
+    new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: cvData.map(r => r.model),
+            datasets: [{
+                label: 'AUROC',
+                data: cvData.map(r => r.auroc_mean),
+                backgroundColor: cvData.map((_, i) =>
+                    ['#2563eb', '#16a34a', '#dc2626', '#f59e0b', '#8b5cf6'][i % 5]
+                ),
+                borderWidth: 0,
+                borderRadius: 4,
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: { y: { min: 0.5, max: 1.0, title: { display: true, text: 'AUROC' } } },
+            plugins: { legend: { display: false } }
+        }
+    });
+}
+</script>
+{% endblock %}

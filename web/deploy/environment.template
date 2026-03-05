@@ -1,0 +1,7 @@
+# SepsisDx Configuration
+# Copy to /etc/sepsis-dx/environment and fill in values
+
+SECRET_KEY=change-me-to-random-secret
+ACTIVE_MODEL=random_forest
+GUNICORN_WORKERS=2
+GUNICORN_THREADS=4

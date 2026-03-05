@@ -1,0 +1,9 @@
+tunnel: <TUNNEL_UUID>
+credentials-file: /etc/cloudflared/<TUNNEL_UUID>.json
+
+ingress:
+  - hostname: sepsis-dx.com
+    service: http://127.0.0.1:8443
+  - hostname: www.sepsis-dx.com
+    service: http://127.0.0.1:8443
+  - service: http_status:404

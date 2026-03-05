@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+{% block title %}Predict{% endblock %}
+
+{% block content %}
+<h4 class="mb-3"><i class="bi bi-clipboard2-pulse me-2"></i>Single Patient Prediction</h4>
+<p class="text-muted">Enter urine ELISA biomarker measurements to classify sepsis status.</p>
+
+<div class="row">
+    <div class="col-lg-6">
+        <div class="card shadow-sm border-0">
+            <div class="card-body">
+                <form action="{{ url_for('predict.run_prediction') }}" method="POST">
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">CRP / Creatinine (pg/mg)</label>
+                        <input type="number" step="any" name="crp_cr" class="form-control form-control-lg"
+                               placeholder="e.g. 450.0" required>
+                        <div class="form-text">SepsisDx threshold: &gt; 300 pg/mg</div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">IP-10 / Creatinine (pg/mg)</label>
+                        <input type="number" step="any" name="ip10_cr" class="form-control form-control-lg"
+                               placeholder="e.g. 85.0" required>
+                        <div class="form-text">SepsisDx threshold: &gt; 100 pg/mg</div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Model</label>
+                        <select name="model_name" class="form-select">
+                            {% for m in models %}
+                            <option value="{{ m.name }}" {% if m.name == get_active_model() %}selected{% endif %}>
+                                {{ m.name }} (AUROC={{ "%.3f"|format(m.auroc) if m.auroc else 'N/A' }})
+                            </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-lg w-100">
+                        <i class="bi bi-play-fill me-1"></i>Run Classification
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-6">
+        <div class="card shadow-sm border-0">
+            <div class="card-header"><h6 class="mb-0">Biomarker Reference</h6></div>
+            <div class="card-body">
+                <table class="table table-sm mb-0">
+                    <thead><tr><th>Biomarker</th><th>Unit</th><th>SepsisDx Threshold</th></tr></thead>
+                    <tbody>
+                        <tr><td>CRP / Creatinine</td><td>pg/mg</td><td>&gt; 300 &rarr; Septic</td></tr>
+                        <tr><td>IP-10 / Creatinine</td><td>pg/mg</td><td>&gt; 100 &rarr; Septic</td></tr>
+                    </tbody>
+                </table>
+                <hr>
+                <h6>Risk Levels</h6>
+                <div class="d-flex gap-2 flex-wrap">
+                    <span class="badge risk-low">LOW (&lt;0.2)</span>
+                    <span class="badge risk-moderate">MODERATE (0.2-0.5)</span>
+                    <span class="badge risk-high">HIGH (0.5-0.8)</span>
+                    <span class="badge risk-very-high">VERY HIGH (&gt;0.8)</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+{% block title %}{{ name }}{% endblock %}
+
+{% block content %}
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{{ url_for('datasets.list_datasets') }}">Datasets</a></li>
+        <li class="breadcrumb-item active">{{ name }}</li>
+    </ol>
+</nav>
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h4><i class="bi bi-table me-2"></i>{{ name }}</h4>
+    <div>
+        <span class="badge bg-secondary me-2">{{ total_rows }} rows</span>
+        <a href="{{ url_for('datasets.download', name=name) }}" class="btn btn-sm btn-outline-primary">
+            <i class="bi bi-download me-1"></i>Download CSV
+        </a>
+    </div>
+</div>
+
+<!-- Stats Row -->
+{% if class_dist %}
+<div class="row g-2 mb-3">
+    {% for status, count in class_dist.items() %}
+    <div class="col-auto">
+        <span class="badge {% if status == 'Septic' %}bg-danger{% elif status == 'SIRS' %}bg-warning text-dark{% else %}bg-success{% endif %} fs-6">
+            {{ status }}: {{ count }}
+        </span>
+    </div>
+    {% endfor %}
+</div>
+{% endif %}
+
+{% if stats %}
+<div class="card shadow-sm border-0 mb-3">
+    <div class="card-header"><h6 class="mb-0">Column Statistics</h6></div>
+    <div class="card-body p-0 table-responsive">
+        <table class="table table-sm mb-0">
+            <thead><tr><th>Column</th><th>Mean</th><th>Std</th><th>Min</th><th>Max</th></tr></thead>
+            <tbody>
+                {% for col, s in stats.items() %}
+                <tr><td>{{ col }}</td><td>{{ s.mean }}</td><td>{{ s.std }}</td><td>{{ s.min }}</td><td>{{ s.max }}</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endif %}
+
+<!-- Data Table -->
+<div class="card shadow-sm border-0">
+    <div class="card-body p-0 table-responsive">
+        {{ table_html|safe }}
+    </div>
+</div>
+
+<!-- Pagination -->
+{% if total_pages > 1 %}
+<nav class="mt-3">
+    <ul class="pagination justify-content-center">
+        <li class="page-item {% if page <= 1 %}disabled{% endif %}">
+            <a class="page-link" href="?page={{ page - 1 }}">Previous</a>
+        </li>
+        {% for p in range(1, total_pages + 1) %}
+        {% if p <= 5 or p > total_pages - 5 or (p >= page - 2 and p <= page + 2) %}
+        <li class="page-item {% if p == page %}active{% endif %}">
+            <a class="page-link" href="?page={{ p }}">{{ p }}</a>
+        </li>
+        {% elif p == 6 or p == total_pages - 5 %}
+        <li class="page-item disabled"><span class="page-link">...</span></li>
+        {% endif %}
+        {% endfor %}
+        <li class="page-item {% if page >= total_pages %}disabled{% endif %}">
+            <a class="page-link" href="?page={{ page + 1 }}">Next</a>
+        </li>
+    </ul>
+</nav>
+{% endif %}
+{% endblock %}

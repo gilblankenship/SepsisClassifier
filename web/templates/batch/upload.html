@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% block title %}Batch Prediction{% endblock %}
+
+{% block content %}
+<h4 class="mb-3"><i class="bi bi-file-earmark-spreadsheet me-2"></i>Batch Prediction</h4>
+<p class="text-muted">Upload a CSV file with biomarker data to classify multiple patients.</p>
+
+<div class="row">
+    <div class="col-lg-6">
+        <div class="card shadow-sm border-0">
+            <div class="card-body">
+                <form action="{{ url_for('batch.upload_csv') }}" method="POST" enctype="multipart/form-data">
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">CSV File</label>
+                        <input type="file" name="csv_file" class="form-control form-control-lg" accept=".csv" required>
+                        <div class="form-text">
+                            Required columns: <code>crp_cr_pg_mg</code>, <code>ip10_cr_pg_mg</code>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-lg w-100">
+                        <i class="bi bi-upload me-1"></i>Upload &amp; Classify
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-6">
+        <div class="card shadow-sm border-0">
+            <div class="card-header"><h6 class="mb-0">CSV Format</h6></div>
+            <div class="card-body">
+                <pre class="bg-light p-3 rounded small mb-0">clinical_status,crp_cr_pg_mg,ip10_cr_pg_mg
+Septic,994.2,33.5
+SIRS,234.2,-2.6
+Healthy,272.8,-5.4
+Septic,299.0,80.0</pre>
+                <div class="text-muted small mt-2">
+                    Optional columns: <code>sample_id</code>, <code>clinical_status</code>, <code>creatinine_nmol_ml</code>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

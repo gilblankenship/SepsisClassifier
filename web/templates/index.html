@@ -1,0 +1,144 @@
+{% extends "base.html" %}
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+<div class="row g-4">
+    <!-- Quick Predict Card -->
+    <div class="col-lg-6">
+        <div class="card shadow-sm border-0">
+            <div class="card-header bg-primary-navy text-white">
+                <h5 class="mb-0"><i class="bi bi-clipboard2-pulse me-2"></i>Quick Prediction</h5>
+            </div>
+            <div class="card-body">
+                <form action="/predict/run" method="POST">
+                    <div class="row g-3">
+                        <div class="col-sm-6">
+                            <label class="form-label fw-semibold">CRP / Creatinine</label>
+                            <div class="input-group">
+                                <input type="number" step="any" name="crp_cr" class="form-control form-control-lg"
+                                       placeholder="e.g. 450.0" required>
+                                <span class="input-group-text">pg/mg</span>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <label class="form-label fw-semibold">IP-10 / Creatinine</label>
+                            <div class="input-group">
+                                <input type="number" step="any" name="ip10_cr" class="form-control form-control-lg"
+                                       placeholder="e.g. 85.0" required>
+                                <span class="input-group-text">pg/mg</span>
+                            </div>
+                        </div>
+                    </div>
+                    <input type="hidden" name="model_name" value="{{ active_model }}">
+                    <button type="submit" class="btn btn-primary btn-lg w-100 mt-3">
+                        <i class="bi bi-play-fill me-1"></i>Classify
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Stats Card -->
+    <div class="col-lg-6">
+        <div class="row g-3">
+            <div class="col-6">
+                <div class="card shadow-sm border-0 text-center p-3">
+                    <div class="display-6 text-primary">{{ models|length }}</div>
+                    <div class="text-muted small">Trained Models</div>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="card shadow-sm border-0 text-center p-3">
+                    <div class="display-6 text-success">
+                        {% if models %}{{ "%.3f"|format(models|map(attribute='auroc')|select('number')|max|default(0)) }}{% else %}--{% endif %}
+                    </div>
+                    <div class="text-muted small">Best AUROC</div>
+                </div>
+            </div>
+            <div class="col-12">
+                <div class="card shadow-sm border-0 p-3">
+                    <h6 class="text-muted mb-2">Active Model</h6>
+                    <div class="d-flex align-items-center">
+                        <span class="badge bg-success me-2">Active</span>
+                        <strong>{{ active_model }}</strong>
+                    </div>
+                    <div class="text-muted small mt-1">
+                        Gold Standard: Blood Culture + Sepsis-3 (SOFA &ge; 2)
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Navigation Cards -->
+<div class="row g-3 mt-3">
+    <div class="col-md-4 col-lg-2">
+        <a href="/predict/" class="card shadow-sm border-0 text-decoration-none nav-card p-3 text-center">
+            <i class="bi bi-clipboard2-pulse display-5 text-primary"></i>
+            <div class="mt-2 fw-semibold">Predict</div>
+            <small class="text-muted">Single patient</small>
+        </a>
+    </div>
+    <div class="col-md-4 col-lg-2">
+        <a href="/batch/" class="card shadow-sm border-0 text-decoration-none nav-card p-3 text-center">
+            <i class="bi bi-file-earmark-spreadsheet display-5 text-info"></i>
+            <div class="mt-2 fw-semibold">Batch</div>
+            <small class="text-muted">CSV upload</small>
+        </a>
+    </div>
+    <div class="col-md-4 col-lg-2">
+        <a href="/train/" class="card shadow-sm border-0 text-decoration-none nav-card p-3 text-center">
+            <i class="bi bi-gear display-5 text-warning"></i>
+            <div class="mt-2 fw-semibold">Train</div>
+            <small class="text-muted">Build models</small>
+        </a>
+    </div>
+    <div class="col-md-4 col-lg-2">
+        <a href="/models/" class="card shadow-sm border-0 text-decoration-none nav-card p-3 text-center">
+            <i class="bi bi-box display-5 text-secondary"></i>
+            <div class="mt-2 fw-semibold">Models</div>
+            <small class="text-muted">Manage</small>
+        </a>
+    </div>
+    <div class="col-md-4 col-lg-2">
+        <a href="/explain/" class="card shadow-sm border-0 text-decoration-none nav-card p-3 text-center">
+            <i class="bi bi-diagram-3 display-5 text-purple"></i>
+            <div class="mt-2 fw-semibold">Explain</div>
+            <small class="text-muted">SHAP analysis</small>
+        </a>
+    </div>
+    <div class="col-md-4 col-lg-2">
+        <a href="/datasets/" class="card shadow-sm border-0 text-decoration-none nav-card p-3 text-center">
+            <i class="bi bi-database display-5 text-danger"></i>
+            <div class="mt-2 fw-semibold">Datasets</div>
+            <small class="text-muted">View &amp; simulate</small>
+        </a>
+    </div>
+</div>
+
+<!-- Reference Samples -->
+<div class="card shadow-sm border-0 mt-4">
+    <div class="card-header">
+        <h6 class="mb-0"><i class="bi bi-journal-medical me-2"></i>Reference Samples (Sepsis Software Samples)</h6>
+    </div>
+    <div class="card-body p-0">
+        <table class="table table-sm table-striped mb-0">
+            <thead>
+                <tr>
+                    <th>Sample</th><th>Status</th><th>CRP/Cr (pg/mg)</th><th>IP-10/Cr (pg/mg)</th>
+                    <th>Gold Standard</th><th>SepsisDx</th><th>Note</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr><td>1</td><td>Septic</td><td>994.2</td><td>33.5</td><td class="text-danger">Septic</td><td class="text-danger">Septic</td><td></td></tr>
+                <tr><td>2</td><td>SIRS</td><td>234.2</td><td>-2.6</td><td class="text-success">Not Septic</td><td class="text-success">Not Septic</td><td></td></tr>
+                <tr><td>3</td><td>Septic</td><td>1141.0</td><td>214.0</td><td class="text-danger">Septic</td><td class="text-danger">Septic</td><td></td></tr>
+                <tr><td>4</td><td>Healthy</td><td>272.8</td><td>-5.4</td><td class="text-success">Not Septic</td><td class="text-success">Not Septic</td><td></td></tr>
+                <tr><td>5</td><td>Septic</td><td>1320.3</td><td>58.06</td><td class="text-danger">Septic</td><td class="text-danger">Septic</td><td></td></tr>
+                <tr class="table-warning"><td>6</td><td>Septic</td><td>299.0</td><td>80.0</td><td class="text-danger">Septic</td><td class="text-success">Not Septic</td><td><span class="badge bg-warning text-dark">FN &mdash; Missed by SepsisDx</span></td></tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

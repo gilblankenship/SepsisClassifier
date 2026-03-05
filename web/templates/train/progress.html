@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+{% block title %}Training in Progress{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <div class="card shadow-sm border-0">
+            <div class="card-header bg-warning text-dark">
+                <h5 class="mb-0"><i class="bi bi-gear-wide-connected me-2"></i>Training in Progress</h5>
+            </div>
+            <div class="card-body text-center py-5">
+                <div class="spinner-border text-warning mb-3" role="status" id="spinner">
+                    <span class="visually-hidden">Training...</span>
+                </div>
+                <h5 id="status-message">Initializing...</h5>
+                <div class="progress mx-auto mt-3" style="max-width: 500px; height: 24px;">
+                    <div class="progress-bar progress-bar-striped progress-bar-animated bg-warning"
+                         id="progress-bar" style="width: 0%">0%</div>
+                </div>
+                <div class="text-muted small mt-3" id="elapsed">Elapsed: 0s</div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+const jobId = "{{ job_id }}";
+const statusUrl = `/train/status/${jobId}`;
+const resultsUrl = `/train/results/${jobId}`;
+
+function poll() {
+    fetch(statusUrl)
+        .then(r => r.json())
+        .then(data => {
+            document.getElementById('status-message').textContent = data.message || data.status;
+            const bar = document.getElementById('progress-bar');
+            bar.style.width = data.progress + '%';
+            bar.textContent = data.progress + '%';
+            document.getElementById('elapsed').textContent = 'Elapsed: ' + data.elapsed + 's';
+
+            if (data.status === 'complete') {
+                window.location.href = resultsUrl;
+            } else if (data.status === 'error') {
+                document.getElementById('spinner').classList.add('d-none');
+                document.getElementById('status-message').innerHTML =
+                    '<span class="text-danger">Error: ' + data.error + '</span>';
+                bar.classList.remove('progress-bar-animated', 'bg-warning');
+                bar.classList.add('bg-danger');
+            } else {
+                setTimeout(poll, 2000);
+            }
+        })
+        .catch(() => setTimeout(poll, 3000));
+}
+poll();
+</script>
+{% endblock %}

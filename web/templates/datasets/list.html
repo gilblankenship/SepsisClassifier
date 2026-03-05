@@ -1,0 +1,90 @@
+{% extends "base.html" %}
+{% block title %}Datasets{% endblock %}
+
+{% block content %}
+<h4 class="mb-3"><i class="bi bi-database me-2"></i>Datasets</h4>
+
+<div class="row g-4">
+    <!-- Dataset List -->
+    <div class="col-lg-7">
+        <div class="card shadow-sm border-0">
+            <div class="card-header"><h6 class="mb-0">Available Datasets</h6></div>
+            <div class="card-body p-0 table-responsive">
+                <table class="table table-sm table-hover mb-0">
+                    <thead>
+                        <tr><th>Name</th><th>Rows</th><th>Columns</th><th>Size</th><th></th></tr>
+                    </thead>
+                    <tbody>
+                        {% for ds in datasets %}
+                        <tr>
+                            <td><a href="{{ url_for('datasets.viewer', name=ds.name) }}">{{ ds.name }}</a></td>
+                            <td>{{ ds.rows }}</td>
+                            <td>{{ ds.columns }}</td>
+                            <td>{{ ds.size_kb }} KB</td>
+                            <td>
+                                <a href="{{ url_for('datasets.download', name=ds.name) }}"
+                                   class="btn btn-sm btn-outline-primary">
+                                    <i class="bi bi-download"></i>
+                                </a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Simulate New -->
+    <div class="col-lg-5">
+        <div class="card shadow-sm border-0">
+            <div class="card-header"><h6 class="mb-0">Generate Synthetic Dataset</h6></div>
+            <div class="card-body">
+                <form action="{{ url_for('datasets.simulate') }}" method="POST">
+                    <div class="row g-2 mb-2">
+                        <div class="col-4">
+                            <label class="form-label small">Septic</label>
+                            <input type="number" name="n_septic" value="200" class="form-control form-control-sm">
+                        </div>
+                        <div class="col-4">
+                            <label class="form-label small">SIRS</label>
+                            <input type="number" name="n_sirs" value="150" class="form-control form-control-sm">
+                        </div>
+                        <div class="col-4">
+                            <label class="form-label small">Healthy</label>
+                            <input type="number" name="n_healthy" value="150" class="form-control form-control-sm">
+                        </div>
+                    </div>
+                    <div class="mb-2">
+                        <label class="form-label small">Profile</label>
+                        <select name="profile" class="form-select form-select-sm">
+                            <option value="general" selected>General</option>
+                            <option value="icu">ICU</option>
+                            <option value="pediatric">Pediatric</option>
+                        </select>
+                    </div>
+                    <div class="mb-2">
+                        <label class="form-label small">Noise Level</label>
+                        <select name="noise" class="form-select form-select-sm">
+                            <option value="low">Low</option>
+                            <option value="medium" selected>Medium</option>
+                            <option value="high">High</option>
+                        </select>
+                    </div>
+                    <div class="mb-2">
+                        <label class="form-label small">Seed</label>
+                        <input type="number" name="seed" value="42" class="form-control form-control-sm">
+                    </div>
+                    <div class="form-check mb-3">
+                        <input type="checkbox" name="extended" class="form-check-input" id="ext_check">
+                        <label class="form-check-label small" for="ext_check">Include extended proteomics biomarkers</label>
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100">
+                        <i class="bi bi-plus-circle me-1"></i>Generate Dataset
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
