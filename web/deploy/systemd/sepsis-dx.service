@@ -3,10 +3,9 @@ Description=SepsisDx Web Application (gunicorn)
 After=network.target
 
 [Service]
-Type=notify
+Type=simple
 User=sepsis-dx
 Group=sepsis-dx
-RuntimeDirectory=sepsis-dx
 WorkingDirectory=/opt/sepsis-dx/web
 Environment="PATH=/opt/sepsis-dx/.venv/bin:/usr/local/bin:/usr/bin"
 EnvironmentFile=-/etc/sepsis-dx/environment
@@ -20,9 +19,6 @@ KillMode=mixed
 # Security hardening
 NoNewPrivileges=true
 PrivateTmp=true
-ProtectSystem=strict
-ReadWritePaths=/opt/sepsis-dx/models /opt/sepsis-dx/data /opt/sepsis-dx/web/uploads /var/log/sepsis-dx
-ProtectHome=read-only
 
 [Install]
 WantedBy=multi-user.target
