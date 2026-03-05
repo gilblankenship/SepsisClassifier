@@ -2,6 +2,7 @@
 
 import os
 import sys
+from datetime import timedelta
 from pathlib import Path
 
 # Add repo root to sys.path so 'import sepsis' works
@@ -12,7 +13,7 @@ sys.path.insert(0, str(REPO_ROOT / "data_simulator"))
 import matplotlib
 matplotlib.use("Agg")
 
-from flask import Flask, render_template, session
+from flask import Flask, redirect, render_template, request, session, url_for
 from flask_cors import CORS
 
 
@@ -34,6 +35,8 @@ def create_app(config_override=None) -> Flask:
     app.config["DATA_DIR"] = str(REPO_ROOT / "data")
     app.config["ACTIVE_MODEL"] = os.environ.get("ACTIVE_MODEL", "random_forest")
 
+    app.permanent_session_lifetime = timedelta(hours=8)
+
     if config_override:
         app.config.update(config_override)
 
@@ -42,6 +45,7 @@ def create_app(config_override=None) -> Flask:
     CORS(app)
 
     # Register blueprints
+    from blueprints.auth import auth_bp
     from blueprints.predict import predict_bp
     from blueprints.batch import batch_bp
     from blueprints.train import train_bp
@@ -51,6 +55,7 @@ def create_app(config_override=None) -> Flask:
     from blueprints.api import api_bp
     from blueprints.help import help_bp
 
+    app.register_blueprint(auth_bp, url_prefix="/auth")
     app.register_blueprint(predict_bp, url_prefix="/predict")
     app.register_blueprint(batch_bp, url_prefix="/batch")
     app.register_blueprint(train_bp, url_prefix="/train")
@@ -62,6 +67,20 @@ def create_app(config_override=None) -> Flask:
 
     # Make get_active_model available in templates
     app.jinja_env.globals["get_active_model"] = get_active_model
+
+    @app.before_request
+    def require_login():
+        # Allow auth routes, static files, and API health check without login
+        allowed = (
+            request.endpoint is not None
+            and (
+                request.endpoint.startswith("auth.")
+                or request.endpoint == "static"
+                or request.endpoint == "api.health"
+            )
+        )
+        if not allowed and "user" not in session:
+            return redirect(url_for("auth.login", next=request.url))
 
     @app.route("/")
     def index():

@@ -74,12 +74,20 @@
                     {% endfor %}
                 </div>
 
-                <!-- Active Model Badge -->
-                <div class="hidden lg:flex items-center">
+                <!-- Active Model Badge + User -->
+                <div class="hidden lg:flex items-center gap-3">
                     <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-emerald-500/20 text-emerald-300 ring-1 ring-emerald-500/30">
                         <span class="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-pulse"></span>
                         {{ config.get('ACTIVE_MODEL', 'random_forest') | replace('_', ' ') | title }}
                     </span>
+                    {% if session.get('user') %}
+                    <div class="flex items-center gap-2 border-l border-white/20 pl-3">
+                        <span class="text-gray-400 text-xs"><i class="bi bi-person-circle mr-1"></i>{{ session.get('full_name', session['user']) }}</span>
+                        <a href="{{ url_for('auth.logout') }}" class="text-gray-400 hover:text-white text-xs no-underline transition" title="Sign out">
+                            <i class="bi bi-box-arrow-right"></i>
+                        </a>
+                    </div>
+                    {% endif %}
                 </div>
 
                 <!-- Mobile menu button -->
@@ -105,6 +113,14 @@
                     <i class="{{ icon }} mr-2"></i>{{ label }}
                 </a>
                 {% endfor %}
+                {% if session.get('user') %}
+                <div class="border-t border-white/10 mt-2 pt-2">
+                    <a href="{{ url_for('auth.logout') }}"
+                       class="block px-3 py-2 rounded-lg text-sm font-medium text-gray-300 hover:text-white hover:bg-white/5 no-underline">
+                        <i class="bi bi-box-arrow-right mr-2"></i>Sign Out ({{ session.get('full_name', session['user']) }})
+                    </a>
+                </div>
+                {% endif %}
             </div>
         </div>
     </nav>
