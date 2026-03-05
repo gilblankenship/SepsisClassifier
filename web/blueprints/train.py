@@ -94,7 +94,8 @@ def start():
                     elif isinstance(pval, float):
                         params[pname] = float(raw)
                     elif isinstance(pval, tuple):
-                        params[pname] = tuple(int(x.strip()) for x in raw.split(","))
+                        cleaned = raw.strip("() ")
+                        params[pname] = tuple(int(x.strip()) for x in cleaned.split(","))
                     else:
                         params[pname] = raw
                 else:
