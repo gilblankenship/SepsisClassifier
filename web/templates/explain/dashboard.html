@@ -3,7 +3,28 @@
 
 {% block content %}
 <h4 class="text-xl font-bold text-navy-900 mb-1"><i class="bi bi-lightbulb mr-2"></i>Model Explainability Dashboard</h4>
-<p class="text-gray-500 mb-6">SHAP-based explanations showing how each biomarker contributes to predictions.</p>
+<p class="text-gray-500 mb-4">SHAP-based explanations showing how each biomarker contributes to predictions.</p>
+
+<!-- Method Overview -->
+<div class="bg-blue-50 border-l-4 border-blue-400 rounded-lg p-4 mb-6">
+    <h5 class="font-semibold text-blue-900 mb-2"><i class="bi bi-info-circle mr-1"></i>About This Tool</h5>
+    <p class="text-sm text-blue-800 mb-2">
+        This classifier uses two urinary biomarkers &mdash; <strong>CRP/Cr</strong> (C-Reactive Protein normalized to Creatinine)
+        and <strong>IP-10/Cr</strong> (Interferon gamma-Induced Protein 10 normalized to Creatinine) &mdash; to predict
+        the likelihood of sepsis. Normalizing to creatinine accounts for variation in urine concentration between patients.
+    </p>
+    <p class="text-sm text-blue-800 mb-2">
+        <strong>CRP</strong> is an acute-phase inflammatory protein produced by the liver in response to infection.
+        <strong>IP-10</strong> (CXCL10) is a chemokine released by immune cells during the innate immune response.
+        Elevated urinary levels of both markers are associated with systemic infection and sepsis.
+    </p>
+    <p class="text-sm text-blue-800">
+        The visualizations below use <strong>SHAP (SHapley Additive exPlanations)</strong>, a method that quantifies
+        how much each biomarker contributes to an individual prediction. This helps clinicians understand
+        <em>why</em> the model classifies a sample as sepsis-positive or sepsis-negative, rather than relying on a
+        &ldquo;black box&rdquo; score alone.
+    </p>
+</div>
 
 <div class="mb-4">
     <label class="text-sm font-semibold text-gray-700 mr-2" for="model-select">Model:</label>
@@ -38,38 +59,90 @@
 
 <!-- Tab Panels -->
 <div id="panel-shap-summary" class="tab-panel active">
-    <div class="bg-white rounded-xl shadow-md p-6 text-center">
-        <img id="img-shap-summary" class="plot-img mx-auto" loading="lazy"
-             src="{{ url_for('explain.shap_summary_png', model=active_model) }}"
-             alt="SHAP Summary Plot">
+    <div class="bg-white rounded-xl shadow-md p-6">
+        <div class="bg-gray-50 rounded-lg p-4 mb-4 text-sm text-gray-700">
+            <p class="font-semibold text-gray-800 mb-1">How to read this plot</p>
+            <p>Each dot represents one patient sample. The horizontal position shows the SHAP value &mdash;
+            how much that biomarker pushed the prediction toward sepsis (right) or away from sepsis (left).
+            Dot color indicates the actual biomarker concentration (red = high, blue = low).
+            A cluster of red dots pushed to the right means high levels of that biomarker are strongly
+            associated with a sepsis-positive prediction.</p>
+        </div>
+        <div class="text-center">
+            <img id="img-shap-summary" class="plot-img mx-auto" loading="lazy"
+                 src="{{ url_for('explain.shap_summary_png', model=active_model) }}"
+                 alt="SHAP Summary Plot">
+        </div>
     </div>
 </div>
 <div id="panel-shap-bar" class="tab-panel">
-    <div class="bg-white rounded-xl shadow-md p-6 text-center">
-        <img id="img-shap-bar" class="plot-img mx-auto" loading="lazy"
-             src="{{ url_for('explain.shap_bar_png', model=active_model) }}"
-             alt="SHAP Bar Plot">
+    <div class="bg-white rounded-xl shadow-md p-6">
+        <div class="bg-gray-50 rounded-lg p-4 mb-4 text-sm text-gray-700">
+            <p class="font-semibold text-gray-800 mb-1">How to read this plot</p>
+            <p>This bar chart ranks each biomarker by its average impact on the model&rsquo;s predictions.
+            A longer bar means that biomarker has a greater overall influence on the sepsis classification.
+            This helps identify which biomarker is the primary driver of the model&rsquo;s decisions
+            and whether the model is placing clinically appropriate weight on each marker.</p>
+        </div>
+        <div class="text-center">
+            <img id="img-shap-bar" class="plot-img mx-auto" loading="lazy"
+                 src="{{ url_for('explain.shap_bar_png', model=active_model) }}"
+                 alt="SHAP Bar Plot">
+        </div>
     </div>
 </div>
 <div id="panel-boundary" class="tab-panel">
-    <div class="bg-white rounded-xl shadow-md p-6 text-center">
-        <img id="img-boundary" class="plot-img mx-auto" loading="lazy"
-             src="{{ url_for('explain.decision_boundary_png', model=active_model) }}"
-             alt="Decision Boundary">
+    <div class="bg-white rounded-xl shadow-md p-6">
+        <div class="bg-gray-50 rounded-lg p-4 mb-4 text-sm text-gray-700">
+            <p class="font-semibold text-gray-800 mb-1">How to read this plot</p>
+            <p>This 2D map plots CRP/Cr on one axis and IP-10/Cr on the other. The colored regions
+            show the model&rsquo;s decision zones &mdash; samples falling in the red-shaded area are classified
+            as sepsis-positive, while those in the blue-shaded area are classified as sepsis-negative.
+            Individual patient samples are overlaid as dots. Look for how cleanly the two groups separate;
+            overlap between them indicates cases where the model is less certain.</p>
+        </div>
+        <div class="text-center">
+            <img id="img-boundary" class="plot-img mx-auto" loading="lazy"
+                 src="{{ url_for('explain.decision_boundary_png', model=active_model) }}"
+                 alt="Decision Boundary">
+        </div>
     </div>
 </div>
 <div id="panel-roc" class="tab-panel">
-    <div class="bg-white rounded-xl shadow-md p-6 text-center">
-        <img class="plot-img mx-auto" loading="lazy"
-             src="{{ url_for('explain.roc_curves_png') }}"
-             alt="ROC Curves">
+    <div class="bg-white rounded-xl shadow-md p-6">
+        <div class="bg-gray-50 rounded-lg p-4 mb-4 text-sm text-gray-700">
+            <p class="font-semibold text-gray-800 mb-1">How to read this plot</p>
+            <p>The ROC (Receiver Operating Characteristic) curve shows the trade-off between
+            <strong>sensitivity</strong> (correctly identifying sepsis cases) and
+            <strong>specificity</strong> (correctly identifying non-sepsis cases) at every possible
+            classification threshold. A curve closer to the top-left corner indicates better performance.
+            The <strong>AUC</strong> (Area Under the Curve) summarizes overall accuracy &mdash;
+            an AUC of 1.0 is perfect, 0.5 is no better than chance. Literature benchmarks are included
+            for comparison with published diagnostic methods.</p>
+        </div>
+        <div class="text-center">
+            <img class="plot-img mx-auto" loading="lazy"
+                 src="{{ url_for('explain.roc_curves_png') }}"
+                 alt="ROC Curves">
+        </div>
     </div>
 </div>
 <div id="panel-calibration" class="tab-panel">
-    <div class="bg-white rounded-xl shadow-md p-6 text-center">
-        <img class="plot-img mx-auto" loading="lazy"
-             src="{{ url_for('explain.calibration_png') }}"
-             alt="Calibration Curves">
+    <div class="bg-white rounded-xl shadow-md p-6">
+        <div class="bg-gray-50 rounded-lg p-4 mb-4 text-sm text-gray-700">
+            <p class="font-semibold text-gray-800 mb-1">How to read this plot</p>
+            <p>The calibration curve assesses whether the model&rsquo;s predicted probabilities match
+            observed outcomes. A perfectly calibrated model follows the diagonal line &mdash;
+            for example, among patients given a 70% sepsis probability, approximately 70% should
+            actually have sepsis. Curves above the diagonal indicate the model underestimates risk;
+            curves below indicate overestimation. Good calibration is essential for clinicians to
+            trust the predicted probability when making treatment decisions.</p>
+        </div>
+        <div class="text-center">
+            <img class="plot-img mx-auto" loading="lazy"
+                 src="{{ url_for('explain.calibration_png') }}"
+                 alt="Calibration Curves">
+        </div>
     </div>
 </div>
 {% endblock %}
