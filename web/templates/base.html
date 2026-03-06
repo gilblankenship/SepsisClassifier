@@ -40,9 +40,7 @@
             <div class="flex items-center justify-between h-16">
                 <!-- Brand -->
                 <a href="/" class="flex items-center gap-3 group no-underline">
-                    <div class="w-9 h-9 bg-medical-500 rounded-lg flex items-center justify-center group-hover:bg-medical-600 transition">
-                        <i class="bi bi-heart-pulse text-white text-lg"></i>
-                    </div>
+                    <img src="{{ url_for('static', filename='img/digital-biosciences-logo.png') }}" alt="Digital Biosciences" class="h-9 w-auto">
                     <div class="leading-tight">
                         <span class="text-white font-bold text-lg tracking-tight">SepsisDx</span>
                         <span class="block text-blue-300 text-[10px] font-medium -mt-0.5">by Digital Biosciences</span>
@@ -157,16 +155,19 @@
     <footer class="bg-navy-900 border-t border-white/10 mt-auto">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
             <div class="flex flex-col md:flex-row items-center justify-between gap-4">
-                <div class="flex items-center gap-2 text-gray-400 text-sm">
-                    <i class="bi bi-heart-pulse text-medical-500"></i>
-                    <span>&copy; 2026 <a href="https://dbmsciences.com/" target="_blank" rel="noopener" class="text-blue-400 hover:text-blue-300 transition no-underline">Digital Biosciences</a>, an <a href="https://mdcstudio.com/" target="_blank" rel="noopener" class="text-blue-400 hover:text-blue-300 transition no-underline">MDC Studio</a> portfolio company</span>
+                <div class="flex items-center gap-4">
+                    <a href="https://dbmsciences.com/" target="_blank" rel="noopener" class="no-underline">
+                        <img src="{{ url_for('static', filename='img/digital-biosciences-logo.png') }}" alt="Digital Biosciences" class="h-8 w-auto opacity-80 hover:opacity-100 transition">
+                    </a>
+                    <div class="text-gray-400 text-sm">
+                        &copy; 2026 <a href="https://dbmsciences.com/" target="_blank" rel="noopener" class="text-blue-400 hover:text-blue-300 transition no-underline">Digital Biosciences</a>
+                    </div>
                 </div>
-                <div class="flex items-center gap-4 text-xs text-gray-500">
-                    <a href="https://dbmsciences.com/" target="_blank" rel="noopener" class="hover:text-gray-300 transition no-underline">dbmsciences.com</a>
-                    <span class="text-gray-700">|</span>
-                    <a href="https://mdcstudio.com/" target="_blank" rel="noopener" class="hover:text-gray-300 transition no-underline">mdcstudio.com</a>
-                    <span class="text-gray-700">|</span>
-                    <span>Urine ELISA Biomarker Analysis</span>
+                <div class="flex items-center gap-4">
+                    <span class="text-gray-500 text-xs">An <a href="https://mdcstudio.com/" target="_blank" rel="noopener" class="text-blue-400 hover:text-blue-300 transition no-underline">MDC Studio</a> Portfolio Company</span>
+                    <a href="https://mdcstudio.com/" target="_blank" rel="noopener" class="no-underline">
+                        <img src="{{ url_for('static', filename='img/mdc-studio-logo.png') }}" alt="MDC Studio" class="h-7 w-auto opacity-80 hover:opacity-100 transition">
+                    </a>
                 </div>
             </div>
         </div>
