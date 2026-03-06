@@ -22,6 +22,11 @@ USERS = {
         "full_name": "MDC Studio",
         "role": "admin",
     },
+    "gil": {
+        "password_hash": generate_password_hash("Blankenship123"),
+        "full_name": "Gil Blankenship",
+        "role": "admin",
+    },
 }
 
 
