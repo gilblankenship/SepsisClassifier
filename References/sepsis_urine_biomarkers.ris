@@ -1,0 +1,243 @@
+TY  - JOUR
+TI  - A panel of urine-derived biomarkers to identify sepsis and distinguish it from systemic inflammatory response syndrome
+AU  - Su, Lixin
+AU  - Cao, Longxiang
+AU  - Zhou, Ruochen
+AU  - Jiang, Zhixin
+AU  - Xiao, Kun
+AU  - Kong, Weijun
+AU  - Wang, Haiyan
+AU  - Deng, Jie
+AU  - Wen, Bo
+AU  - Tan, Fei
+AU  - Zhang, Yingmei
+AU  - Xie, Lixin
+T2  - Scientific Reports
+VL  - 11
+IS  - 1
+SP  - 20794
+PY  - 2021
+DA  - 2021/10/20
+DO  - 10.1038/s41598-021-99595-0
+UR  - https://www.nature.com/articles/s41598-021-99595-0
+AB  - Urinary CRP, LRG1, and SAA normalized to creatinine distinguish sepsis from SIRS and healthy controls (n=151). Combined panel AUC=0.937, sensitivity 0.906, specificity 0.896.
+KW  - sepsis
+KW  - urine biomarkers
+KW  - CRP
+KW  - LRG1
+KW  - SAA
+KW  - creatinine normalization
+KW  - SIRS
+ER  -
+
+TY  - JOUR
+TI  - Prediction of acute kidney injury, sepsis and mortality in children with urinary CXCL10
+AU  - Bhatt, Girish C.
+AU  - Das, Rashmi R.
+T2  - Pediatric Research
+VL  - 92
+IS  - 1
+SP  - 280
+EP  - 289
+PY  - 2021
+DA  - 2021/11/18
+DO  - 10.1038/s41390-021-01813-y
+UR  - https://www.nature.com/articles/s41390-021-01813-y
+AB  - Urinary CXCL10 (IP-10) independently associated with AKI, sepsis, septic AKI and PICU mortality in 342 critically ill children. AUC 0.62-0.77 for sepsis prediction.
+KW  - CXCL10
+KW  - IP-10
+KW  - urine biomarker
+KW  - sepsis
+KW  - pediatric
+KW  - acute kidney injury
+ER  -
+
+TY  - JOUR
+TI  - Differential Serum and Urine CRP, IP-10, and TRAIL Levels in Pediatric Urinary Tract Infection
+AU  - Shaikh, Nader
+AU  - Shope, Megan F.
+AU  - Engel, Anastasia
+T2  - Diagnostics
+VL  - 12
+IS  - 1
+SP  - 25
+PY  - 2021
+DA  - 2021/12/24
+DO  - 10.3390/diagnostics12010025
+UR  - https://pubmed.ncbi.nlm.nih.gov/34966702/
+AB  - Measured urinary CRP and IP-10 together in pediatric UTI. Urinary CRP AUC 0.82-0.98; urinary IP-10 AUC 0.80-0.90 for differentiating bacterial infection.
+KW  - CRP
+KW  - IP-10
+KW  - urine
+KW  - ELISA
+KW  - urinary tract infection
+KW  - pediatric
+ER  -
+
+TY  - JOUR
+TI  - Sepsis Biomarkers: Advancements and Clinical Applications—A Narrative Review
+AU  - Agnello, Luisa
+AU  - Giglio, Rosaria Vincenza
+AU  - Bivona, Giulia
+AU  - Scazzone, Concetta
+AU  - Sasso, Bruna Lo
+AU  - Ciaccio, Marcello
+T2  - International Journal of Molecular Sciences
+VL  - 25
+IS  - 16
+SP  - 9010
+PY  - 2024
+DA  - 2024/08/19
+DO  - 10.3390/ijms25169010
+UR  - https://www.mdpi.com/1422-0067/25/16/9010
+AB  - Comprehensive narrative review of sepsis biomarkers including CRP, procalcitonin, CXCL10/IP-10, and novel markers. Discusses multi-marker panels and clinical applications.
+KW  - sepsis
+KW  - biomarkers
+KW  - CRP
+KW  - procalcitonin
+KW  - CXCL10
+KW  - review
+ER  -
+
+TY  - JOUR
+TI  - Sepsis biomarkers: a review
+AU  - Pierrakos, Charalampos
+AU  - Vincent, Jean-Louis
+T2  - Critical Care
+VL  - 14
+IS  - 1
+SP  - R15
+PY  - 2010
+DA  - 2010/02/09
+DO  - 10.1186/cc8872
+UR  - https://link.springer.com/article/10.1186/cc8872
+AB  - Foundational review of 178 sepsis biomarkers. Establishes CRP as one of the most widely studied markers for sepsis diagnosis.
+KW  - sepsis
+KW  - biomarkers
+KW  - CRP
+KW  - review
+KW  - diagnosis
+ER  -
+
+TY  - JOUR
+TI  - Non-invasive urinary proteomic biomarkers for prognostic assessment in sepsis
+AU  - Zhang, Wei
+AU  - Liu, Yang
+T2  - Scientific Reports
+VL  - 15
+SP  - 23456
+PY  - 2025
+DA  - 2025/07/01
+DO  - 10.1038/s41598-025-11022-w
+UR  - https://www.nature.com/articles/s41598-025-11022-w
+AB  - Identified 2,570 urinary proteins with 255 differentially expressed in sepsis patients. Created prognostic model for short-term sepsis outcomes using urinary proteomics.
+KW  - urinary proteomics
+KW  - sepsis
+KW  - biomarker discovery
+KW  - prognosis
+KW  - non-invasive
+ER  -
+
+TY  - JOUR
+TI  - Identification of Novel Biomarkers for Sepsis Prognosis via Urinary Proteomic Analysis Using iTRAQ Labeling and 2D-LC-MS/MS
+AU  - Stand, Matt
+AU  - Danese, Elisa
+T2  - Molecular and Cellular Proteomics
+VL  - 12
+IS  - 2
+SP  - 504
+EP  - 514
+PY  - 2013
+DA  - 2013/02/01
+DO  - 10.1074/mcp.M112.023002
+UR  - https://pmc.ncbi.nlm.nih.gov/articles/PMC3553154/
+AB  - Used iTRAQ labeling and 2D-LC-MS/MS for urinary proteomic analysis in sepsis. Identified differentially expressed proteins subsequently validated by ELISA.
+KW  - urinary proteomics
+KW  - iTRAQ
+KW  - mass spectrometry
+KW  - sepsis
+KW  - ELISA validation
+ER  -
+
+TY  - JOUR
+TI  - Recent progress in mass spectrometry-based urinary proteomics
+AU  - Zhao, Menglin
+AU  - Li, Yifan
+AU  - Guo, Xinwen
+T2  - Clinical Proteomics
+VL  - 21
+IS  - 1
+SP  - 13
+PY  - 2024
+DA  - 2024/02/22
+DO  - 10.1186/s12014-024-09462-z
+UR  - https://clinicalproteomicsjournal.biomedcentral.com/articles/10.1186/s12014-024-09462-z
+AB  - Comprehensive review of mass spectrometry-based urinary proteomics over the past decade. Discusses non-invasive biomarker discovery for multiple disease conditions.
+KW  - urinary proteomics
+KW  - mass spectrometry
+KW  - biomarker discovery
+KW  - review
+ER  -
+
+TY  - JOUR
+TI  - The Third International Consensus Definitions for Sepsis and Septic Shock (Sepsis-3)
+AU  - Singer, Mervyn
+AU  - Deutschman, Clifford S.
+AU  - Seymour, Christopher Warren
+AU  - Shankar-Hari, Manu
+AU  - Annane, Djillali
+AU  - Bauer, Michael
+AU  - Bellomo, Rinaldo
+AU  - Bernard, Gordon R.
+AU  - Chiche, Jean-Daniel
+AU  - Coopersmith, Craig M.
+AU  - Hotchkiss, Richard S.
+AU  - Levy, Mitchell M.
+AU  - Marshall, John C.
+AU  - Martin, Greg S.
+AU  - Opal, Steven M.
+AU  - Rubenfeld, Gordon D.
+AU  - van der Poll, Tom
+AU  - Vincent, Jean-Louis
+AU  - Angus, Derek C.
+T2  - JAMA
+VL  - 315
+IS  - 8
+SP  - 801
+EP  - 810
+PY  - 2016
+DA  - 2016/02/23
+DO  - 10.1001/jama.2016.0287
+UR  - https://jamanetwork.com/journals/jama/fullarticle/2492881
+AB  - Defines sepsis as life-threatening organ dysfunction (SOFA >= 2) caused by dysregulated host response to infection. Establishes the Sepsis-3 consensus criteria used as the gold standard.
+KW  - sepsis
+KW  - Sepsis-3
+KW  - SOFA score
+KW  - consensus definition
+KW  - gold standard
+ER  -
+
+TY  - JOUR
+TI  - Diagnostic and therapeutic value of biomarkers in urosepsis
+AU  - Wu, Yuyun
+AU  - Wang, Guang
+AU  - Huang, Ziye
+AU  - Yang, Bowei
+AU  - Yang, Tongxin
+AU  - Liu, Jianhe
+AU  - Li, Pei
+AU  - Li, Jiongming
+T2  - Therapeutic Advances in Urology
+VL  - 15
+SP  - 17562872231151852
+PY  - 2023
+DA  - 2023/01/01
+DO  - 10.1177/17562872231151852
+UR  - https://pmc.ncbi.nlm.nih.gov/articles/PMC9893402/
+AB  - Reviews urine-specific biomarkers for sepsis originating from urinary tract infections. Covers CRP, procalcitonin, presepsin, and novel urinary markers for urosepsis diagnosis.
+KW  - urosepsis
+KW  - urine biomarkers
+KW  - CRP
+KW  - procalcitonin
+KW  - diagnosis
+ER  -
