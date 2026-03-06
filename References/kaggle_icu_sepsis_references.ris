@@ -1,0 +1,67 @@
+TY  - JOUR
+AU  - Yilmaz Başer, Hülya
+AU  - Evran, Turan
+AU  - Cifci, Mehmet Akif
+TI  - Machine Learning-Augmented Triage for Sepsis: Real-Time ICU Mortality Prediction Using SHAP-Explained Meta-Ensemble Models
+T2  - Biomedicines
+DA  - 2025/06/12
+PY  - 2025
+VL  - 13
+IS  - 6
+SP  - 1449
+DO  - 10.3390/biomedicines13061449
+UR  - https://doi.org/10.3390/biomedicines13061449
+AN  - 40564166
+C1  - PMC12190226
+KW  - clinical critical decision support
+KW  - deep learning
+KW  - emergency department
+KW  - in-hospital mortality
+KW  - intensive care unit
+KW  - machine learning
+KW  - predictive modeling
+KW  - sepsis
+KW  - stacked ensemble model
+AB  - An interpretable machine learning framework for predicting in-hospital mortality in sepsis patients upon ICU admission. Using retrospective data from a tertiary university hospital (January 2019 to June 2024), the study addressed class imbalance and missing data through synthetic oversampling and imputation. A hybrid approach combined ensemble algorithms with deep learning, optimized via the Red Piranha algorithm. The model achieved an AUC of 0.96, a Brier score of 0.118, and a recall of 81%, demonstrating superior predictive performance over conventional scoring systems.
+DB  - PubMed
+DP  - Kaggle: https://www.kaggle.com/datasets/mehmetakifciftci/icu-sepsis-dataset-xlsx
+ER  -
+
+TY  - DATA
+AU  - Cifci, Mehmet Akif
+TI  - ICU Sepsis Dataset
+PY  - 2024
+PB  - Kaggle
+UR  - https://www.kaggle.com/datasets/mehmetakifciftci/icu-sepsis-dataset-xlsx
+N1  - 4,521 ICU patient records from a Turkish tertiary university hospital. Includes demographics, comorbidities, clinical scores (qSOFA, NEWS, SIRS), laboratory tests (CRP, creatinine, WBC, albumin), blood culture results, and antibiotic therapy. Licensed under MIT.
+ER  -
+
+TY  - JOUR
+AU  - Johnson, Alistair E.W.
+AU  - Pollard, Tom J.
+AU  - Shen, Lu
+AU  - Lehman, Li-wei H.
+AU  - Feng, Mengling
+AU  - Ghassemi, Mohammad
+AU  - Moody, Benjamin
+AU  - Szolovits, Peter
+AU  - Celi, Leo Anthony
+AU  - Mark, Roger G.
+TI  - MIMIC-III, a freely accessible critical care database
+T2  - Scientific Data
+DA  - 2016/05/24
+PY  - 2016
+VL  - 3
+SP  - 160035
+DO  - 10.1038/sdata.2016.35
+UR  - https://doi.org/10.1038/sdata.2016.35
+AN  - 27219127
+C1  - PMC4878278
+AB  - MIMIC-III (Medical Information Mart for Intensive Care III) is a large, freely-available database comprising de-identified health-related data associated with over 40,000 patients who stayed in critical care units of the Beth Israel Deaconess Medical Center between 2001 and 2012. The database includes information such as demographics, vital sign measurements, laboratory test results, procedures, medications, caregiver notes, imaging reports, and mortality (both in and out of hospital). Used by Yilmaz Başer et al. (2025) for external validation of their sepsis mortality prediction model, achieving AUROC 0.94.
+KW  - critical care
+KW  - electronic health records
+KW  - intensive care unit
+KW  - clinical database
+KW  - MIMIC
+DB  - PubMed
+ER  -

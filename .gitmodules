@@ -1,0 +1,3 @@
+[submodule "References/COMPOSER"]
+	path = References/COMPOSER
+	url = https://github.com/NematiLab/COMPOSER.git
