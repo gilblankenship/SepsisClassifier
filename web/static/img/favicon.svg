@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#3B82F6"/>
+      <stop offset="100%" stop-color="#1E40AF"/>
+    </linearGradient>
+  </defs>
+  <!-- Rounded square background -->
+  <rect width="512" height="512" rx="96" fill="url(#bg)"/>
+  <!-- Shield outline -->
+  <path d="M256 72c0 0-128 32-128 32v176c0 80 128 160 128 160s128-80 128-160V104L256 72z"
+        fill="none" stroke="white" stroke-width="24" stroke-linejoin="round"/>
+  <!-- Heartbeat/pulse line across shield -->
+  <polyline points="160,260 210,260 230,200 256,320 280,220 300,260 352,260"
+            fill="none" stroke="white" stroke-width="22" stroke-linecap="round" stroke-linejoin="round"/>
+  <!-- Small Dx text at bottom of shield -->
+  <text x="256" y="400" text-anchor="middle" fill="white" font-family="Arial,Helvetica,sans-serif"
+        font-weight="bold" font-size="64" letter-spacing="2">Dx</text>
+</svg>
