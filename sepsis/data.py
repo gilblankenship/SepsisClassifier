@@ -84,19 +84,13 @@ def generate_synthetic_data(
 def load_csv(path: str | Path) -> pd.DataFrame:
     """Load clinical data from CSV.
 
-    Required columns: clinical_status, crp_cr_pg_mg, ip10_cr_pg_mg
-    Optional columns: creatinine_nmol_ml, sample_id, gold_standard_label
+    Expected columns: clinical_status, creatinine_nmol_ml, crp_cr_pg_mg, ip10_cr_pg_mg
     """
     df = pd.read_csv(path)
-    # Derive clinical_status from sepsis_label if missing
-    if "clinical_status" not in df.columns and "sepsis_label" in df.columns:
-        df["clinical_status"] = df["sepsis_label"].map({1: "Septic", 0: "Healthy"})
-    required = {"clinical_status", "crp_cr_pg_mg", "ip10_cr_pg_mg"}
+    required = {"clinical_status", "creatinine_nmol_ml", "crp_cr_pg_mg", "ip10_cr_pg_mg"}
     missing = required - set(df.columns)
     if missing:
         raise ValueError(f"CSV missing required columns: {missing}")
-    if "creatinine_nmol_ml" not in df.columns:
-        df["creatinine_nmol_ml"] = 0.0
     if "gold_standard_label" not in df.columns:
         df["gold_standard_label"] = df["clinical_status"].map(LABEL_MAP)
     if "sample_id" not in df.columns:
